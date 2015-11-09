@@ -154,6 +154,86 @@ void remplir_tableau(int** tableau, int hauteur, int largeur, obj nouv_objet)
 }
 
 
+/* @requires 
+   @assigns
+   @ensures renvoie le maximum de a et b
+   @*/
+int max(int a, int b)
+{
+  if(a>b){
+    return a;
+  }
+  return b;
+}
+
+/* @requires hauteur>1, largeur>1
+   @assigns
+   @ensures
+   @*/
+void print_tableau(int** tab, int hauteur, int largeur, int val_max)
+{
+  int h, l;
+  int n;
+  int nb_chiffres; /*nombre de chiffres de la valeur maximale du tableau, pour gérer un affichage correct*/
+  
+  nb_chiffres=max(3, log10(val_max)+1);
+  
+  for(h=0; h<hauteur; h=h+1) /*boucle sur les lignes*/
+  {
+    /*affichage de la barre horizontale en haut de la ligne en cours*/
+    printf("-");
+    for(l=1; l<=largeur; l=l+1)
+    {
+      for(n=0; n<=nb_chiffres; n=n+1)
+      {
+	printf("-");
+      }
+    }
+    printf("\n");
+    
+    /*affichage d'une première ligne "vide" car chaque ligne est affichée sur 3 lignes de texte*/
+    for(l=0; l<largeur; l=l+1)
+    {
+      printf("|%*s", nb_chiffres, "");
+    }
+    printf("|\n");
+    
+    /*affichage des lignes comportant du contenu*/
+    for(l=0; l<largeur; l=l+1)
+    {
+      if(tab[h][l]!=0)
+      {
+	printf("|%*i", nb_chiffres, tab[h][l]);
+      }
+      else
+      {
+	printf("|%*s", nb_chiffres, "");
+      }
+    }
+    printf("|\n");
+    
+    /*affichage de la troisième ligne "vide"*/
+    for(l=0; l<largeur; l=l+1)
+    {
+      printf("|%*s", nb_chiffres, "");
+    }
+    printf("|\n");
+  }
+  
+  /*affichage de la barre horizontale fermant le tableau*/
+  printf("-");
+  for(l=1; l<=largeur; l=l+1)
+  {
+    for(n=0; n<=nb_chiffres; n=n+1)
+    {
+      printf("-");
+    }
+  }
+  printf("\n");
+  printf("\n");
+};
+
+
 int main()
 {
     int param_borne, param_hauteur, param_largeur; /*paramètres du jeu*/
@@ -198,6 +278,8 @@ int main()
     nouvel_obj=nouvel_objet(nb_cases_vides, valeur_max); /*on génère le nouvel objet à ajouter à notre tableau de jeu*/
 	
     remplir_tableau(tableau, param_hauteur, param_largeur, nouvel_obj); /*on place le nouvel objet dans le tableau à la place indiquée*/
+	
+    print_tableau(tableau, param_hauteur, param_largeur, valeur_max);
 
 
     printf("Hello world!\n");
