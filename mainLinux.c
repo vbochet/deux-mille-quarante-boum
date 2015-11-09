@@ -4,6 +4,13 @@
 #include <time.h> /*pour l'aléatoire*/
 #include <math.h>
 
+struct sobj{
+    int position; /*position dans le tableau*/
+    int type; /*1 pour nombre, 2 pour bombe*/
+    int valeur; /*valeur normale si nombre, valeur négative si bombe +,x,*.*/
+};
+typedef struct sobj obj;
+
 /* @requires
    @assigns
    @ensures renvoie 0 si l'utilisateur a validé (en entrant 'y' ou 'Y'), et renvoie 1 sinon
@@ -79,12 +86,43 @@ void parametres(int *borne, int *hauteur, int *largeur) /*fonction de demande de
 }
 
 
+/* @requires a<b
+   @assigns
+   @ensures renvoie un entier aléatoire compris entre a inclus et b exclus
+   @*/
+int alea_bornes(int a, int b)
+{
+    return rand()%(b-a) +a;
+}
+
+/* @requires
+   @assigns
+   @ensures renvoie un objet à ajouter dans le tableau
+   @*/
+obj nouvel_objet(int cases_vides, int valeur_max)
+{
+    obj nouv_objet;
+    int valeur;
+
+    if(valeur_max<64) {valeur=1;}
+    else if(valeur_max<256) {valeur=(alea_bornes(0,10)>6)+1;}
+    else {valeur=(alea_bornes(0,10)>5)+1;}
+
+    nouv_objet.position=alea_bornes(0,cases_vides); /*numéro de la case vide où placer ce nouvel objet*/
+    nouv_objet.type=1;
+    nouv_objet.valeur=valeur;
+
+    return nouv_objet;
+}
+
 int main()
 {
     int param_borne, param_hauteur, param_largeur; /*paramètres du jeu*/
     int confirm; /*variable qui contient 0 en cas de confirmation d'une action, autre chose sinon*/
     int ** tableau; /*tableau à deux dimensions contenant les valeurs du tableau*/
     int h,l; /*variables de boucle for portant sur la hauteur et la largeur du tableau*/
+    int nb_cases_vides, valeur_max;
+    obj nouvel_obj;
 
     /*on demande au joueur d'entrer les paramètres du jeu*/
     parametres(&param_borne, &param_hauteur, & param_largeur);
@@ -111,6 +149,12 @@ int main()
             tableau[h][l]=0;
         }
     }
+	
+    /*PREMIER TOUR DE JEU : on génère aléatoirement la position du 1 dans le tableau*/
+    nb_cases_vides=param_hauteur*param_largeur;
+    valeur_max=1;
+
+    nouvel_obj=nouvel_objet(nb_cases_vides, valeur_max); /*on génère le nouvel objet à ajouter à notre tableau de jeu*/
 
     printf("Hello world!\n");
     return 0;
