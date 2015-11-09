@@ -115,6 +115,45 @@ obj nouvel_objet(int cases_vides, int valeur_max)
     return nouv_objet;
 }
 
+
+/* @requires
+   @assigns
+   @ensures renvoie la position de l'objet à ajouter dans le tableau
+   @*/
+void remplir_tableau(int** tableau, int hauteur, int largeur, obj nouv_objet)
+{
+    int h, l, cpt;
+    h=0; cpt=0;
+
+    while(h<hauteur) /*s'arrête car on incrémente de 1 le compteur à chaque fois*/
+    {
+        l=0;
+        while(l<largeur) /*s'arrête pour les mêmes raisons que la boucle précédente*/
+        {
+            if(tableau[h][l]==0) /*si la case vaut 0, alors c'est une case vide*/
+            {
+                if(nouv_objet.position==cpt)
+                {
+                    tableau[h][l]=nouv_objet.valeur;
+                    h=hauteur; /*on met fin à la boucle sur h*/
+                    l=largeur; /*on met fin à la boucle sur l*/
+                }
+                else
+                {
+                    l=l+1; /*on incrémente le compteur de boucle*/
+                    cpt=cpt+1; /*on incrémente le compteur de cases vides*/
+                }
+            }
+            else
+            {
+                l=l+1;
+            }
+        }
+        h=h+1;
+    }
+}
+
+
 int main()
 {
     int param_borne, param_hauteur, param_largeur; /*paramètres du jeu*/
@@ -157,6 +196,9 @@ int main()
     valeur_max=1;
 
     nouvel_obj=nouvel_objet(nb_cases_vides, valeur_max); /*on génère le nouvel objet à ajouter à notre tableau de jeu*/
+	
+    remplir_tableau(tableau, param_hauteur, param_largeur, nouvel_obj); /*on place le nouvel objet dans le tableau à la place indiquée*/
+
 
     printf("Hello world!\n");
     return 0;
