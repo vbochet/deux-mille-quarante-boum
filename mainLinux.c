@@ -1,8 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h> /*pour la comparaison des chaînes de caractères*/
-#include <time.h> /*pour l'aléatoire*/
-#include <math.h>
 
 /* @requires
    @assigns les variables borne, hauteur et largeur pointées par les arguments
