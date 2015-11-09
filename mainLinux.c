@@ -83,6 +83,8 @@ int main()
 {
     int param_borne, param_hauteur, param_largeur; /*paramètres du jeu*/
     int confirm; /*variable qui contient 0 en cas de confirmation d'une action, autre chose sinon*/
+    int ** tableau; /*tableau à deux dimensions contenant les valeurs du tableau*/
+    int h,l; /*variables de boucle for portant sur la hauteur et la largeur du tableau*/
 
     /*on demande au joueur d'entrer les paramètres du jeu*/
     parametres(&param_borne, &param_hauteur, & param_largeur);
@@ -95,6 +97,19 @@ int main()
     {
         parametres(&param_borne, &param_hauteur, &param_largeur);
         confirm=confirmation();
+    }
+
+    system("clear"); /*efface l'écran avant de commencer le jeu*/
+
+    /*on génère un tableau vide des dimensions choisies par le joueur*/
+    tableau=(int **)calloc(param_hauteur,sizeof(int*));
+    for(h=0 ; h<param_hauteur ; h=h+1)
+    {
+        tableau[h]=(int *)calloc(param_largeur,sizeof(int));
+        for(l=0; l<param_largeur; l=l+1) /*on en profite pour affecter à 0 (<=> vide) toutes les cases du tableau*/
+        {
+            tableau[h][l]=0;
+        }
     }
 
     printf("Hello world!\n");
