@@ -95,6 +95,7 @@ int alea_bornes(int a, int b)
     return rand()%(b-a) +a;
 }
 
+
 /* @requires
    @assigns
    @ensures renvoie un objet à ajouter dans le tableau
@@ -165,6 +166,7 @@ int max(int a, int b)
   }
   return b;
 }
+
 
 /* @requires hauteur>1, largeur>1
    @assigns
@@ -279,9 +281,13 @@ int main()
 	
     remplir_tableau(tableau, param_hauteur, param_largeur, nouvel_obj); /*on place le nouvel objet dans le tableau à la place indiquée*/
 	
-    print_tableau(tableau, param_hauteur, param_largeur, valeur_max);
+    print_tableau(tableau, param_hauteur, param_largeur, valeur_max); /*on affiche le tableau*/
 
 
+	
+    /*à la fin du jeu, on libère la mémoire*/
+    free(tableau);
+	
     printf("Hello world!\n");
     return 0;
 }
