@@ -124,6 +124,8 @@ int main()
     int nb_cases_vides, valeur_max;
     obj nouvel_obj;
 
+    srand(time(NULL)); /*on initialise l'aléatoire*/
+
     /*on demande au joueur d'entrer les paramètres du jeu*/
     parametres(&param_borne, &param_hauteur, & param_largeur);
 
