@@ -442,6 +442,7 @@ void tour(int** tab, int hauteur, int largeur, int* val_max, int* cases_vides, i
 	char action;
 	
 	nb_chiffres=max(3, log10(*val_max)+1);
+	*n_tour = *n_tour+1;
 	
     nouvel_obj=nouvel_objet(*cases_vides, *val_max); /*on génère le nouvel objet à ajouter à notre tableau de jeu*/
 	
@@ -452,7 +453,30 @@ void tour(int** tab, int hauteur, int largeur, int* val_max, int* cases_vides, i
 	execute_action(tab, hauteur, largeur, val_max, cases_vides, action);
 	
 	
-	*n_tour = *n_tour+1;
+}
+
+
+/* @requires
+   @assigns
+   @ensures 
+   @*/
+void fin_partie(int resultat, int n_tours, int cases_vides, int duree)
+{
+	if(resultat==1) /*le joueur a gagné la partie*/
+	{
+		printf("Vous avez gagné la partie !!!\n");
+	}
+	else if(resultat==2) /*le joueur a gagné la partie*/
+	{
+		printf("Il ne reste plus de case vide. \n");
+		printf("Vous avez perdu la partie. :(\n");
+	}
+
+	printf("_____________________________\n\n");
+	printf("Statistiques de la partie :\n");
+	printf("Nombre de tours = %i\n", n_tours);
+	printf("Nombre de cases vides restantes = %i\n", cases_vides);
+	printf("La partie a duré %i secondes\n\n\n", duree);
 }
 
 
@@ -464,7 +488,9 @@ int main()
     int h,l; /*variables de boucle for portant sur la hauteur et la largeur du tableau*/
     int nb_cases_vides, valeur_max;
 	int n_tour; /*variable contenant le nombre de tours joués, utile pour les stats de fin de partie*/
+	int horaire_debut, horaire_fin;
 	int partie_en_cours; 
+	int resultat;
 
     srand(time(NULL)); /*on initialise l'aléatoire*/
 
@@ -497,27 +523,29 @@ int main()
     /*avant de lancer le premier tour, on assigne des valeurs de base aux variables*/
     nb_cases_vides=param_hauteur*param_largeur;
     valeur_max=1;
-	n_tour=1;
+	n_tour=0;
 	partie_en_cours=1;
+	horaire_debut=time(NULL);
 
 	/*tours de jeu*/
-	
 	while(partie_en_cours==1)
 	{
 		tour(tableau, param_hauteur, param_largeur, &valeur_max, &nb_cases_vides, &n_tour);
-		if(valeur_max>param_borne) {
+		
+		if(valeur_max>=param_borne) {
 			partie_en_cours=0;
-			printf("Vous avez gagné !\n\n");
+			resultat = 1;
 		}
 		if(nb_cases_vides <= 0){
 			partie_en_cours=0;
-			printf("Il n'y a plus de cases vides, vous avez perdu. :(\n\n");
+			resultat = 2;
 		}
 	}
-		
+	horaire_fin=time(NULL);
+	
+	fin_partie(resultat, n_tour, nb_cases_vides, horaire_fin-horaire_debut);
+	
     /*à la fin du jeu, on libère la mémoire*/
     free(tableau);
-	
-    printf("Hello world!\n");
     return 0;
 }
