@@ -5,9 +5,9 @@
 #include <math.h>
 
 struct sobj{
-    int position; /*position dans le tableau*/
-    int type; /*1 pour nombre, 2 pour bombe*/
-    int valeur; /*valeur normale si nombre, valeur négative si bombe +,x,*.*/
+    int position; /*position dans le tableau, en terme de k_ième case vide*/
+    int type; /*1 pour nombre*/
+    int valeur; 
 };
 typedef struct sobj obj;
 
@@ -37,8 +37,8 @@ int confirmation()/*fonction de demande de confirmation*/
 
 
 /* @requires
-   @assigns les variables borne, hauteur et largeur pointées par les arguments
-   @ensures les variables pointées contiennent des valeurs valides pour le jeu (borne supérieure à 1, tableau de dimensions minimales 2x2)
+   @assigns borne, hauteur, largeur
+   @ensures à la fin, les variables contiennent des valeurs valides pour le jeu (borne supérieure à 1, tableau de dimensions minimales 2x2)
    @*/
 void parametres(int *borne, int *hauteur, int *largeur) /*fonction de demande des paramètres à l'utilisateur*/
 {
@@ -93,7 +93,7 @@ int alea_bornes(int a, int b)
 }
 
 
-/* @requires
+/* @requires cases_vides>0
    @assigns
    @ensures renvoie un objet à ajouter dans le tableau
    @*/
@@ -103,8 +103,8 @@ obj nouvel_objet(int cases_vides, int valeur_max)
     int valeur;
 
     if(valeur_max<64) {valeur=1;}
-    else if(valeur_max<256) {valeur=(alea_bornes(0,10)>6)+1;}
-    else {valeur=(alea_bornes(0,10)>5)+1;}
+    else if(valeur_max<256) {valeur=(alea_bornes(0,100)>80)+1;} /*80% de chances d'avoir un 1, 20% d'avoir un 2*/
+    else {valeur=(alea_bornes(0,100)>65)+1;} /*65% de chances d'avoir un 1, 35% d'avoir un 2*/
 
     nouv_objet.position=alea_bornes(0,cases_vides); /*numéro de la case vide où placer ce nouvel objet*/
     nouv_objet.type=1;
@@ -114,8 +114,8 @@ obj nouvel_objet(int cases_vides, int valeur_max)
 }
 
 
-/* @requires hauteur>1, largeur>1
-   @assigns tab
+/* @requires hauteur>1, largeur>1, cases_vides>0
+   @assigns tab, cases_vides
    @ensures à la fin, le nouvel objet est placé au bon endroit dans le tableau
    @*/
 void remplir_tableau(int** tableau, int hauteur, int largeur, int* cases_vides, obj nouv_objet)
@@ -168,7 +168,7 @@ int max(int a, int b)
 
 /* @requires hauteur>1, largeur>1
    @assigns
-   @ensures
+   @ensures affiche le tableau
    @*/
 void print_tableau(int** tab, int hauteur, int largeur, int val_max)
 {
@@ -232,7 +232,6 @@ void print_tableau(int** tab, int hauteur, int largeur, int val_max)
    @assigns 
    @ensures à la fin, le joueur a effectué un choix de mouvement valide
    @*/
-   
 char choix_action(int** tab, int hauteur, int largeur, int val_max, int nb_chiffres)
 {
 	int faire_boucle,n;
@@ -291,7 +290,6 @@ char choix_action(int** tab, int hauteur, int largeur, int val_max, int nb_chiff
    @assigns tab, val_max, cases_vides
    @ensures à la fin, on a effectué tous les déplacements du tour
    @*/
-   
 void execute_action(int** tab, int hauteur, int largeur, int* val_max, int* cases_vides, char action)
 {
 	int h,l; /*variables de boucles correspondant aux lignes et aux colonnes*/
@@ -432,7 +430,7 @@ void execute_action(int** tab, int hauteur, int largeur, int* val_max, int* case
 
 
 /* @requires hauteur>1, largeur>1, *val_max>0, *cases_vides>0
-   @assigns cases du tableau tab, val_max, cases_vides, n_tour
+   @assigns tab, val_max, cases_vides, n_tour
    @ensures à la fin, le joueur a effectué un tour de jeu complet
    @*/
 void tour(int** tab, int hauteur, int largeur, int* val_max, int* cases_vides, int* n_tour)
@@ -458,7 +456,7 @@ void tour(int** tab, int hauteur, int largeur, int* val_max, int* cases_vides, i
 
 /* @requires
    @assigns
-   @ensures 
+   @ensures affiche les résultats de la partie
    @*/
 void fin_partie(int resultat, int n_tours, int cases_vides, int duree)
 {
