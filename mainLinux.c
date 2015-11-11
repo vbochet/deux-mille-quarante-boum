@@ -48,37 +48,34 @@ void parametres(int *borne, int *hauteur, int *largeur) /*fonction de demande de
     /*borne max à dépasser dans le jeu*/
     printf("Valeur à atteindre : "); /*on affiche une fois la demande*/
     scanf("%i", borne);
-    printf("\n");
+	
     /*si la valeur n'est pas correcte, on entre dans une boucle affichant un message d'erreur et redemandant la valeur*/
     while(*borne<=1) /*la boucle se termine lorsque le joueur rentre une valeur correcte*/
     {
         printf("La valeur doit être un nombre supérieur à 1 ! \nValeur à atteindre : ");
         scanf("%i", borne);
-        printf("\n");
     }
 
     /*hauteur du tableau*/
     printf("Hauteur du tableau : "); /*on affiche une fois la demande*/
     scanf("%i", hauteur);
-    printf("\n");
+	
     /*si la valeur n'est pas correcte, on entre dans une boucle affichant un message d'erreur et redemandant la valeur*/
     while(*hauteur<=1) /*la boucle se termine lorsque le joueur rentre une valeur correcte*/
     {
         printf("La hauteur est forcément supérieure à 1 ! \nHauteur du tableau : ");
         scanf("%i", hauteur);
-        printf("\n");
     }
 
     /*largeur du tableau*/
     printf("Largeur du tableau : "); /*on affiche une fois la demande*/
     scanf("%i", largeur);
-    printf("\n");
+	
     /*si la valeur n'est pas correcte, on entre dans une boucle affichant un message d'erreur et redemandant la valeur*/
     while(*largeur<=1) /*la boucle se termine lorsque le joueur rentre une valeur correcte*/
     {
         printf("La largeur est forcément supérieure à 1 ! \nLargeur du tableau : ");
         scanf("%i", largeur);
-        printf("\n");
     }
 
     /*on affiche un récapitulatif des choix du joueur*/
@@ -184,12 +181,9 @@ void print_tableau(int** tab, int hauteur, int largeur, int val_max)
   {
     /*affichage de la barre horizontale en haut de la ligne en cours*/
     printf("-");
-    for(l=1; l<=largeur; l=l+1)
-    {
-      for(n=0; n<=nb_chiffres; n=n+1)
-      {
-	printf("-");
-      }
+	for(n=1; n<=largeur*(nb_chiffres+1); n=n+1)
+	{
+		printf("-");
     }
     printf("\n");
     
@@ -223,16 +217,13 @@ void print_tableau(int** tab, int hauteur, int largeur, int val_max)
   }
   
   /*affichage de la barre horizontale fermant le tableau*/
-  printf("-");
-  for(l=1; l<=largeur; l=l+1)
-  {
-    for(n=0; n<=nb_chiffres; n=n+1)
-    {
-      printf("-");
+    printf("-");
+	for(n=1; n<=largeur*(nb_chiffres+1); n=n+1)
+	{
+		printf("-");
     }
-  }
-  printf("\n");
-  printf("\n");
+    printf("\n");
+	printf("\n");
 };
 
 
@@ -243,14 +234,29 @@ void print_tableau(int** tab, int hauteur, int largeur, int val_max)
 void tour(int** tab, int hauteur, int largeur, int* val_max, int* cases_vides, int* n_tour)
 {
     obj nouvel_obj;
+	int n;
+	int nb_chiffres;
+	char action;
+	
+	nb_chiffres=max(3, log10(*val_max)+1);
+  
 	
     nouvel_obj=nouvel_objet(*cases_vides, *val_max); /*on génère le nouvel objet à ajouter à notre tableau de jeu*/
 	
     remplir_tableau(tab, hauteur, largeur, nouvel_obj); /*on place le nouvel objet dans le tableau à la place indiquée*/
+	*cases_vides = *cases_vides-1;
 	
     print_tableau(tab, hauteur, largeur, *val_max); /*on affiche le tableau*/
 
-	*cases_vides = *cases_vides-1;
+	printf("Que faire ?");
+	/*affichage d'espaces pour situer l'invite à droite du tableau*/
+    printf(" ");
+	for(n=1; n<=(largeur*(nb_chiffres+1))-(int)(strlen("Que faire ?")+1); n=n+1)
+	{
+		printf(" ");
+    }
+	scanf("%1s", &action);
+	
 	*n_tour = *n_tour+1;
 }
 int main()
