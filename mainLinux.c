@@ -227,22 +227,23 @@ void print_tableau(int** tab, int hauteur, int largeur, int val_max)
 };
 
 
-/* @requires 
+/* @requires hauteur>1, largeur>1, nb_chiffres>0
    @assigns 
-   @ensures 
+   @ensures à la fin, le joueur a effectué un choix de mouvement valide
    @*/
    
-char choix_action(int** tab, int hauteur, int largeur, int* val_max, int nb_chiffres)
+char choix_action(int** tab, int hauteur, int largeur, int val_max, int nb_chiffres)
 {
 	int faire_boucle,n;
 	char action;
+	char buffer[2]; /* 2 car 1 caractère PLUS le \0 des chaînes */
 	
 	faire_boucle = 1;
 	
-	while(faire_boucle==1)
+	while(faire_boucle==1) /*se terminera lorsque le joueur aura effectué un choix correct et qu'il l'aura validé*/
 	{
 		system("clear");
-		print_tableau(tab, hauteur, largeur, *val_max); /*on affiche le tableau*/
+		print_tableau(tab, hauteur, largeur, val_max); /*on affiche le tableau*/
 
 		printf("Que faire ?");
 	
@@ -252,7 +253,8 @@ char choix_action(int** tab, int hauteur, int largeur, int* val_max, int nb_chif
 		{
 			printf(" ");
 		}
-		scanf("%1s", &action);
+		scanf("%1s", buffer);
+		action=buffer[0];
 		
 		switch(action) {
 			case 'i':
@@ -284,6 +286,39 @@ char choix_action(int** tab, int hauteur, int largeur, int* val_max, int nb_chif
 }
 
 
+/* @requires hauteur>1, largeur>1, nb_chiffres>0, action in {i,j,k,l}
+   @assigns val_max
+   @ensures à la fin, le joueur a effectué un choix de mouvement valide
+   @*/
+   
+void execute_action(int** tab, int hauteur, int largeur, int* val_max, int nb_chiffres, char action)
+{
+	switch(action) {
+		case 'i':
+			printf("Vous avez choisi de vous déplacer vers le haut. \n");
+			
+		break;
+		
+		case 'j':
+			printf("Vous avez choisi de vous déplacer vers la gauche. \n");
+			
+		break;
+		
+		case 'k':
+			printf("Vous avez choisi de vous déplacer vers le bas. \n");
+			
+		break;
+		
+		case 'l':
+			printf("Vous avez choisi de vous déplacer vers la droite. \n");
+			
+		break;
+	}
+	
+	return;
+}
+
+
 /* @requires hauteur>1, largeur>1, *val_max>0, *cases_vides>0
    @assigns cases du tableau tab, val_max, cases_vides, n_tour
    @ensures à la fin, le joueur a effectué un tour de jeu complet
@@ -291,7 +326,6 @@ char choix_action(int** tab, int hauteur, int largeur, int* val_max, int nb_chif
 void tour(int** tab, int hauteur, int largeur, int* val_max, int* cases_vides, int* n_tour)
 {
     obj nouvel_obj;
-	int n;
 	int nb_chiffres;
 	char action;
 	
@@ -302,9 +336,10 @@ void tour(int** tab, int hauteur, int largeur, int* val_max, int* cases_vides, i
     remplir_tableau(tab, hauteur, largeur, nouvel_obj); /*on place le nouvel objet dans le tableau à la place indiquée*/
 	*cases_vides = *cases_vides-1;
 	
-	action=choix_action(tab, hauteur, largeur, val_max, nb_chiffres);
+	action=choix_action(tab, hauteur, largeur, *val_max, nb_chiffres);
 	
-	printf("action : %c", action);
+	execute_action(tab, hauteur, largeur, val_max, nb_chiffres, action);
+	
 	
 	*n_tour = *n_tour+1;
 }
