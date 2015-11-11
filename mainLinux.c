@@ -114,11 +114,11 @@ obj nouvel_objet(int cases_vides, int valeur_max)
 }
 
 
-/* @requires
-   @assigns
-   @ensures renvoie la position de l'objet à ajouter dans le tableau
+/* @requires hauteur>1, largeur>1
+   @assigns tab
+   @ensures à la fin, le nouvel objet est placé au bon endroit dans le tableau
    @*/
-void remplir_tableau(int** tableau, int hauteur, int largeur, obj nouv_objet)
+void remplir_tableau(int** tableau, int hauteur, int largeur, int* cases_vides, obj nouv_objet)
 {
     int h, l, cpt;
     h=0; cpt=0;
@@ -130,11 +130,12 @@ void remplir_tableau(int** tableau, int hauteur, int largeur, obj nouv_objet)
         {
             if(tableau[h][l]==0) /*si la case vaut 0, alors c'est une case vide*/
             {
-                if(nouv_objet.position==cpt)
+                if(nouv_objet.position==cpt) /*si c'est la position pour le nouvel objet, on l'y place et on termine la boucle*/
                 {
                     tableau[h][l]=nouv_objet.valeur;
                     h=hauteur; /*on met fin à la boucle sur h*/
                     l=largeur; /*on met fin à la boucle sur l*/
+					*cases_vides = *cases_vides - 1; 
                 }
                 else
                 {
@@ -287,11 +288,11 @@ char choix_action(int** tab, int hauteur, int largeur, int val_max, int nb_chiff
 
 
 /* @requires hauteur>1, largeur>1, action in {i,j,k,l}
-   @assigns tab, val_max
+   @assigns tab, val_max, cases_vides
    @ensures à la fin, on a effectué tous les déplacements du tour
    @*/
    
-void execute_action(int** tab, int hauteur, int largeur, int* val_max, char action)
+void execute_action(int** tab, int hauteur, int largeur, int* val_max, int* cases_vides, char action)
 {
 	int h,l; /*variables de boucles correspondant aux lignes et aux colonnes*/
 	
@@ -312,6 +313,7 @@ void execute_action(int** tab, int hauteur, int largeur, int* val_max, char acti
 						{
 							tab[h-1][l]=tab[h-1][l]+tab[h][l];
 							tab[h][l]=0;
+							*cases_vides = *cases_vides + 1; /*on a libéré une case du tableau*/
 							
 							if(*val_max<tab[h-1][l]) /*si la valeur maximale du tableau est celle que l'on vient de créer, on met à jour la valeur de la variable correspondante*/
 							{
@@ -343,6 +345,7 @@ void execute_action(int** tab, int hauteur, int largeur, int* val_max, char acti
 						{
 							tab[h][l-1]=tab[h][l-1]+tab[h][l];
 							tab[h][l]=0;
+							*cases_vides = *cases_vides + 1; /*on a libéré une case du tableau*/
 							
 							if(*val_max<tab[h][l-1]) /*si la valeur maximale du tableau est celle que l'on vient de créer, on met à jour la valeur de la variable correspondante*/
 							{
@@ -374,6 +377,7 @@ void execute_action(int** tab, int hauteur, int largeur, int* val_max, char acti
 						{
 							tab[h+1][l]=tab[h+1][l]+tab[h][l];
 							tab[h][l]=0;
+							*cases_vides = *cases_vides + 1; /*on a libéré une case du tableau*/
 							
 							if(*val_max<tab[h+1][l]) /*si la valeur maximale du tableau est celle que l'on vient de créer, on met à jour la valeur de la variable correspondante*/
 							{
@@ -406,6 +410,7 @@ void execute_action(int** tab, int hauteur, int largeur, int* val_max, char acti
 						{
 							tab[h][l+1]=tab[h][l+1]+tab[h][l];
 							tab[h][l]=0;
+							*cases_vides = *cases_vides + 1; /*on a libéré une case du tableau*/
 							
 							if(*val_max<tab[h][l+1]) /*si la valeur maximale du tableau est celle que l'on vient de créer, on met à jour la valeur de la variable correspondante*/
 							{
@@ -440,12 +445,11 @@ void tour(int** tab, int hauteur, int largeur, int* val_max, int* cases_vides, i
 	
     nouvel_obj=nouvel_objet(*cases_vides, *val_max); /*on génère le nouvel objet à ajouter à notre tableau de jeu*/
 	
-    remplir_tableau(tab, hauteur, largeur, nouvel_obj); /*on place le nouvel objet dans le tableau à la place indiquée*/
-	*cases_vides = *cases_vides-1;
+    remplir_tableau(tab, hauteur, largeur, cases_vides, nouvel_obj); /*on place le nouvel objet dans le tableau à la place indiquée*/
 	
 	action=choix_action(tab, hauteur, largeur, *val_max, nb_chiffres);
 	
-	execute_action(tab, hauteur, largeur, val_max, action);
+	execute_action(tab, hauteur, largeur, val_max, cases_vides, action);
 	
 	
 	*n_tour = *n_tour+1;
@@ -460,6 +464,7 @@ int main()
     int h,l; /*variables de boucle for portant sur la hauteur et la largeur du tableau*/
     int nb_cases_vides, valeur_max;
 	int n_tour; /*variable contenant le nombre de tours joués, utile pour les stats de fin de partie*/
+	int partie_en_cours; 
 
     srand(time(NULL)); /*on initialise l'aléatoire*/
 
@@ -493,16 +498,23 @@ int main()
     nb_cases_vides=param_hauteur*param_largeur;
     valeur_max=1;
 	n_tour=1;
+	partie_en_cours=1;
 
-	/*tour de jeu*/
-	tour(tableau, param_hauteur, param_largeur, &valeur_max, &nb_cases_vides, &n_tour);
-	if(valeur_max>param_borne) {
-		printf("Vous avez gagné !");
-	}
-	if(nb_cases_vides <= 0){
-		printf("il n'y a plus de cases vides, vous avez perdu. :(");
-	}
+	/*tours de jeu*/
 	
+	while(partie_en_cours==1)
+	{
+		tour(tableau, param_hauteur, param_largeur, &valeur_max, &nb_cases_vides, &n_tour);
+		if(valeur_max>param_borne) {
+			partie_en_cours=0;
+			printf("Vous avez gagné !\n\n");
+		}
+		if(nb_cases_vides <= 0){
+			partie_en_cours=0;
+			printf("Il n'y a plus de cases vides, vous avez perdu. :(\n\n");
+		}
+	}
+		
     /*à la fin du jeu, on libère la mémoire*/
     free(tableau);
 	
