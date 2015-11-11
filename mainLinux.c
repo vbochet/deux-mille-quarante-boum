@@ -286,31 +286,138 @@ char choix_action(int** tab, int hauteur, int largeur, int val_max, int nb_chiff
 }
 
 
-/* @requires hauteur>1, largeur>1, nb_chiffres>0, action in {i,j,k,l}
-   @assigns val_max
-   @ensures à la fin, le joueur a effectué un choix de mouvement valide
+/* @requires hauteur>1, largeur>1, action in {i,j,k,l}
+   @assigns tab, val_max
+   @ensures à la fin, on a effectué tous les déplacements du tour
    @*/
    
-void execute_action(int** tab, int hauteur, int largeur, int* val_max, int nb_chiffres, char action)
+void execute_action(int** tab, int hauteur, int largeur, int* val_max, char action)
 {
+	int h,l; /*variables de boucles correspondant aux lignes et aux colonnes*/
+	
 	switch(action) {
-		case 'i':
-			printf("Vous avez choisi de vous déplacer vers le haut. \n");
+		case 'i': /*déplacement vers le haut*/
+			for(h=1; h<hauteur; h=h+1) /*on parcourt toutes les lignes sauf la première (sur laquelle on ne peut pas faire de déplacement*/
+			{
+				for(l=0; l<largeur; l=l+1) /*on parcourt toutes les cases de la ligne en cours*/
+				{
+					if(tab[h][l]!=0) /*si la case n'est pas vide, on agit*/
+					{
+						if(tab[h-1][l]==0) /*si la case située au dessus est vide, on peut y déplacer l'élément actuellement en cours de traitement*/
+						{
+							tab[h-1][l]=tab[h][l];
+							tab[h][l]=0;
+						}
+						else if(tab[h-1][l]==tab[h][l]) /*si la case située au dessus a la même valeur que la case en cours de traitement, on les "fusionne"*/
+						{
+							tab[h-1][l]=tab[h-1][l]+tab[h][l];
+							tab[h][l]=0;
+							
+							if(*val_max<tab[h-1][l]) /*si la valeur maximale du tableau est celle que l'on vient de créer, on met à jour la valeur de la variable correspondante*/
+							{
+								*val_max=tab[h-1][l];
+							}
+						}
+					}
+					
+					system("clear");
+					print_tableau(tab, hauteur, largeur, *val_max);
+				}
+			}
 			
 		break;
 		
-		case 'j':
-			printf("Vous avez choisi de vous déplacer vers la gauche. \n");
+		case 'j': /*déplacement vers la gauche*/
+			for(l=1; l<largeur; l=l+1)
+			{
+				for(h=0; h<hauteur; h=h+1)
+				{
+					if(tab[h][l]!=0) /*si la case n'est pas vide, on agit*/
+					{
+						if(tab[h][l-1]==0) /*si la case située à gauche est vide, on peut y déplacer l'élément actuellement en cours de traitement*/
+						{
+							tab[h][l-1]=tab[h][l];
+							tab[h][l]=0;
+						}
+						else if(tab[h][l-1]==tab[h][l]) /*si la case située à gauche a la même valeur que la case en cours de traitement, on les "fusionne"*/
+						{
+							tab[h][l-1]=tab[h][l-1]+tab[h][l];
+							tab[h][l]=0;
+							
+							if(*val_max<tab[h][l-1]) /*si la valeur maximale du tableau est celle que l'on vient de créer, on met à jour la valeur de la variable correspondante*/
+							{
+								*val_max=tab[h][l-1];
+							}
+						}
+					}
+					
+					system("clear");
+					print_tableau(tab, hauteur, largeur, *val_max);
+				}
+			}
 			
 		break;
 		
-		case 'k':
-			printf("Vous avez choisi de vous déplacer vers le bas. \n");
+		case 'k': /*déplacement vers le bas*/
+			for(h=hauteur-2; h>=0; h=h-1)
+			{
+				for(l=0; l<largeur; l=l+1)
+				{
+					if(tab[h][l]!=0) /*si la case n'est pas vide, on agit*/
+					{
+						if(tab[h+1][l]==0) /*si la case située en dessous est vide, on peut y déplacer l'élément actuellement en cours de traitement*/
+						{
+							tab[h+1][l]=tab[h][l];
+							tab[h][l]=0;
+						}
+						else if(tab[h+1][l]==tab[h][l]) /*si la case située en dessous a la même valeur que la case en cours de traitement, on les "fusionne"*/
+						{
+							tab[h+1][l]=tab[h+1][l]+tab[h][l];
+							tab[h][l]=0;
+							
+							if(*val_max<tab[h+1][l]) /*si la valeur maximale du tableau est celle que l'on vient de créer, on met à jour la valeur de la variable correspondante*/
+							{
+								*val_max=tab[h+1][l];
+							}
+						}
+					}
+					
+					system("clear");
+					print_tableau(tab, hauteur, largeur, *val_max);
+					
+				}
+			}
 			
 		break;
 		
-		case 'l':
-			printf("Vous avez choisi de vous déplacer vers la droite. \n");
+		case 'l': /*déplacement vers la droite*/
+			for(l=largeur-2; l>=0; l=l-1)
+			{
+				for(h=0; h<hauteur; h=h+1)
+				{
+					if(tab[h][l]!=0) /*si la case n'est pas vide, on agit*/
+					{
+						if(tab[h][l+1]==0) /*si la case située à droite est vide, on peut y déplacer l'élément actuellement en cours de traitement*/
+						{
+							tab[h][l+1]=tab[h][l];
+							tab[h][l]=0;
+						}
+						else if(tab[h][l+1]==tab[h][l]) /*si la case située à droite a la même valeur que la case en cours de traitement, on les "fusionne"*/
+						{
+							tab[h][l+1]=tab[h][l+1]+tab[h][l];
+							tab[h][l]=0;
+							
+							if(*val_max<tab[h][l+1]) /*si la valeur maximale du tableau est celle que l'on vient de créer, on met à jour la valeur de la variable correspondante*/
+							{
+								*val_max=tab[h][l+1];
+							}
+						}
+					}
+					
+					system("clear");
+					print_tableau(tab, hauteur, largeur, *val_max);
+				}
+			}
 			
 		break;
 	}
@@ -338,7 +445,7 @@ void tour(int** tab, int hauteur, int largeur, int* val_max, int* cases_vides, i
 	
 	action=choix_action(tab, hauteur, largeur, *val_max, nb_chiffres);
 	
-	execute_action(tab, hauteur, largeur, val_max, nb_chiffres, action);
+	execute_action(tab, hauteur, largeur, val_max, action);
 	
 	
 	*n_tour = *n_tour+1;
