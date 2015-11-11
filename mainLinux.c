@@ -231,6 +231,63 @@ void print_tableau(int** tab, int hauteur, int largeur, int val_max)
    @assigns 
    @ensures 
    @*/
+   
+char choix_action(int** tab, int hauteur, int largeur, int* val_max, int nb_chiffres)
+{
+	int faire_boucle,n;
+	char action;
+	
+	faire_boucle = 1;
+	
+	while(faire_boucle==1)
+	{
+		system("clear");
+		print_tableau(tab, hauteur, largeur, *val_max); /*on affiche le tableau*/
+
+		printf("Que faire ?");
+	
+		/*affichage d'espaces pour situer l'invite à droite du tableau*/
+		printf(" ");
+		for(n=1; n<=(largeur*(nb_chiffres+1))-12; n=n+1) /*12 pour nombre de caractères de la question + 1*/
+		{
+			printf(" ");
+		}
+		scanf("%1s", &action);
+		
+		switch(action) {
+			case 'i':
+				printf("Vous avez choisi de vous déplacer vers le haut. \n");
+				faire_boucle=confirmation();
+			break;
+			
+			case 'j':
+				printf("Vous avez choisi de vous déplacer vers la gauche. \n");
+				faire_boucle=confirmation();
+			break;
+			
+			case 'k':
+				printf("Vous avez choisi de vous déplacer vers le bas. \n");
+				faire_boucle=confirmation();
+			break;
+			
+			case 'l':
+				printf("Vous avez choisi de vous déplacer vers la droite. \n");
+				faire_boucle=confirmation();
+			break;
+			
+			default:
+				printf("erreur\n");
+		}
+	}
+	
+	return action;
+}
+
+
+/* @requires hauteur>1, largeur>1, *val_max>0, *cases_vides>0
+   @assigns cases du tableau tab, val_max, cases_vides, n_tour
+   @ensures à la fin, le joueur a effectué un tour de jeu complet
+   @*/
 void tour(int** tab, int hauteur, int largeur, int* val_max, int* cases_vides, int* n_tour)
 {
     obj nouvel_obj;
@@ -239,26 +296,20 @@ void tour(int** tab, int hauteur, int largeur, int* val_max, int* cases_vides, i
 	char action;
 	
 	nb_chiffres=max(3, log10(*val_max)+1);
-  
 	
     nouvel_obj=nouvel_objet(*cases_vides, *val_max); /*on génère le nouvel objet à ajouter à notre tableau de jeu*/
 	
     remplir_tableau(tab, hauteur, largeur, nouvel_obj); /*on place le nouvel objet dans le tableau à la place indiquée*/
 	*cases_vides = *cases_vides-1;
 	
-    print_tableau(tab, hauteur, largeur, *val_max); /*on affiche le tableau*/
-
-	printf("Que faire ?");
-	/*affichage d'espaces pour situer l'invite à droite du tableau*/
-    printf(" ");
-	for(n=1; n<=(largeur*(nb_chiffres+1))-(int)(strlen("Que faire ?")+1); n=n+1)
-	{
-		printf(" ");
-    }
-	scanf("%1s", &action);
+	action=choix_action(tab, hauteur, largeur, val_max, nb_chiffres);
+	
+	printf("action : %c", action);
 	
 	*n_tour = *n_tour+1;
 }
+
+
 int main()
 {
     int param_borne, param_hauteur, param_largeur; /*paramètres du jeu*/
