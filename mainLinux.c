@@ -236,6 +236,23 @@ void print_tableau(int** tab, int hauteur, int largeur, int val_max)
 };
 
 
+/* @requires 
+   @assigns 
+   @ensures 
+   @*/
+void tour(int** tab, int hauteur, int largeur, int* val_max, int* cases_vides, int* n_tour)
+{
+    obj nouvel_obj;
+	
+    nouvel_obj=nouvel_objet(*cases_vides, *val_max); /*on génère le nouvel objet à ajouter à notre tableau de jeu*/
+	
+    remplir_tableau(tab, hauteur, largeur, nouvel_obj); /*on place le nouvel objet dans le tableau à la place indiquée*/
+	
+    print_tableau(tab, hauteur, largeur, *val_max); /*on affiche le tableau*/
+
+	*cases_vides = *cases_vides-1;
+	*n_tour = *n_tour+1;
+}
 int main()
 {
     int param_borne, param_hauteur, param_largeur; /*paramètres du jeu*/
@@ -243,7 +260,7 @@ int main()
     int ** tableau; /*tableau à deux dimensions contenant les valeurs du tableau*/
     int h,l; /*variables de boucle for portant sur la hauteur et la largeur du tableau*/
     int nb_cases_vides, valeur_max;
-    obj nouvel_obj;
+	int n_tour; /*variable contenant le nombre de tours joués, utile pour les stats de fin de partie*/
 
     srand(time(NULL)); /*on initialise l'aléatoire*/
 
@@ -273,17 +290,19 @@ int main()
         }
     }
 	
-    /*PREMIER TOUR DE JEU : on génère aléatoirement la position du 1 dans le tableau*/
+    /*avant de lancer le premier tour, on assigne des valeurs de base aux variables*/
     nb_cases_vides=param_hauteur*param_largeur;
     valeur_max=1;
+	n_tour=1;
 
-    nouvel_obj=nouvel_objet(nb_cases_vides, valeur_max); /*on génère le nouvel objet à ajouter à notre tableau de jeu*/
-	
-    remplir_tableau(tableau, param_hauteur, param_largeur, nouvel_obj); /*on place le nouvel objet dans le tableau à la place indiquée*/
-	
-    print_tableau(tableau, param_hauteur, param_largeur, valeur_max); /*on affiche le tableau*/
-
-
+	/*tour de jeu*/
+	tour(tableau, param_hauteur, param_largeur, &valeur_max, &nb_cases_vides, &n_tour);
+	if(valeur_max>param_borne) {
+		printf("Vous avez gagné !");
+	}
+	if(nb_cases_vides <= 0){
+		printf("il n'y a plus de cases vides, vous avez perdu. :(");
+	}
 	
     /*à la fin du jeu, on libère la mémoire*/
     free(tableau);
