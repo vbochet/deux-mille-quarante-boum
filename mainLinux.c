@@ -293,37 +293,51 @@ char choix_action(int** tab, int hauteur, int largeur, int val_max, int nb_chiff
 void execute_action(int** tab, int hauteur, int largeur, int* val_max, int* cases_vides, char action)
 {
 	int h,l; /*variables de boucles correspondant aux lignes et aux colonnes*/
+	int m,n; /**/
 	
 	switch(action) {
 		case 'i': /*déplacement vers le haut*/
-			for(h=1; h<hauteur; h=h+1) /*on parcourt toutes les lignes sauf la première (sur laquelle on ne peut pas faire de déplacement*/
+			for (h=1; h<hauteur; h=h+1)
 			{
-				for(l=0; l<largeur; l=l+1) /*on parcourt toutes les cases de la ligne en cours*/
+				for (l=0; l<largeur; l=l+1)
 				{
-					if(tab[h][l]!=0) /*si la case n'est pas vide, on agit*/
+					m=h;
+					while(m>0)
 					{
-						if(tab[h-1][l]==0) /*si la case située au dessus est vide, on peut y déplacer l'élément actuellement en cours de traitement*/
+						if(tab[m][l]!=0) /*si la case n'est pas vide, on agit*/
 						{
-							tab[h-1][l]=tab[h][l];
-							tab[h][l]=0;
-						}
-						else if(tab[h-1][l]==tab[h][l]) /*si la case située au dessus a la même valeur que la case en cours de traitement, on les "fusionne"*/
-						{
-							tab[h-1][l]=tab[h-1][l]+tab[h][l];
-							tab[h][l]=0;
-							*cases_vides = *cases_vides + 1; /*on a libéré une case du tableau*/
-							
-							if(*val_max<tab[h-1][l]) /*si la valeur maximale du tableau est celle que l'on vient de créer, on met à jour la valeur de la variable correspondante*/
+							if(tab[m-1][l]==0) /*si la case située au dessus est vide, on peut y déplacer l'élément actuellement en cours de traitement*/
 							{
-								*val_max=tab[h-1][l];
+								tab[m-1][l]=tab[m][l]; /*on swap les cases*/
+								tab[m][l]=0;
+								m=m-1; /*on travaille sur la case du dessus pour poursuivre le déplacement*/
+							}
+							else if(tab[m-1][l]==tab[m][l]) /*si la case située au dessus a la même valeur que la case en cours de traitement, on les "fusionne"*/
+							{
+								tab[m-1][l]=tab[m-1][l]+tab[m][l];
+								tab[m][l]=0;
+								*cases_vides = *cases_vides + 1; /*on a libéré une case du tableau*/
+								
+								if(*val_max<tab[m-1][l]) /*si la valeur maximale du tableau est celle que l'on vient de créer, on met à jour la valeur de la variable correspondante*/
+								{
+									*val_max=tab[m-1][l];
+								}
+								m=0; /*on sort de la boucle dès lors qu'on a fait une somme avec une autre case. en effet, si on ne s'arrête pas, on risque de sommer des cases qui viennent d'être crées pendant le tour*/
+							}
+							else /*si on ne peut pas faire de mouvement, on arrête la boucle*/
+							{
+								m=0;
 							}
 						}
+						else /*si on n'avait pas une case vide, on met fin à la boucle*/
+						{
+							m=0;
+						}
 					}
-					
-					system("clear");
-					print_tableau(tab, hauteur, largeur, *val_max);
 				}
 			}
+			
+			
 			
 		break;
 		
@@ -332,28 +346,39 @@ void execute_action(int** tab, int hauteur, int largeur, int* val_max, int* case
 			{
 				for(h=0; h<hauteur; h=h+1)
 				{
-					if(tab[h][l]!=0) /*si la case n'est pas vide, on agit*/
+					n=l;
+					while(n>0)
 					{
-						if(tab[h][l-1]==0) /*si la case située à gauche est vide, on peut y déplacer l'élément actuellement en cours de traitement*/
+						if(tab[h][n]!=0) /*si la case n'est pas vide, on agit*/
 						{
-							tab[h][l-1]=tab[h][l];
-							tab[h][l]=0;
-						}
-						else if(tab[h][l-1]==tab[h][l]) /*si la case située à gauche a la même valeur que la case en cours de traitement, on les "fusionne"*/
-						{
-							tab[h][l-1]=tab[h][l-1]+tab[h][l];
-							tab[h][l]=0;
-							*cases_vides = *cases_vides + 1; /*on a libéré une case du tableau*/
-							
-							if(*val_max<tab[h][l-1]) /*si la valeur maximale du tableau est celle que l'on vient de créer, on met à jour la valeur de la variable correspondante*/
+							if(tab[h][n-1]==0) /*si la case située à gauche est vide, on peut y déplacer l'élément actuellement en cours de traitement*/
 							{
-								*val_max=tab[h][l-1];
+								tab[h][n-1]=tab[h][n];
+								tab[h][n]=0;
+								n=n-1;
+							}
+							else if(tab[h][n-1]==tab[h][n]) /*si la case située à gauche a la même valeur que la case en cours de traitement, on les "fusionne"*/
+							{
+								tab[h][n-1]=tab[h][n-1]+tab[h][n];
+								tab[h][n]=0;
+								*cases_vides = *cases_vides + 1; /*on a libéré une case du tableau*/
+								
+								if(*val_max<tab[h][n-1]) /*si la valeur maximale du tableau est celle que l'on vient de créer, on met à jour la valeur de la variable correspondante*/
+								{
+									*val_max=tab[h][n-1];
+								}
+								n=0;
+							}
+							else /*si on ne peut pas faire de mouvement, on arrête la boucle*/
+							{
+								n=0;
 							}
 						}
+						else /*si on n'avait pas une case vide, on met fin à la boucle*/
+						{
+							n=0;
+						}
 					}
-					
-					system("clear");
-					print_tableau(tab, hauteur, largeur, *val_max);
 				}
 			}
 			
@@ -364,29 +389,39 @@ void execute_action(int** tab, int hauteur, int largeur, int* val_max, int* case
 			{
 				for(l=0; l<largeur; l=l+1)
 				{
-					if(tab[h][l]!=0) /*si la case n'est pas vide, on agit*/
+					m=h;
+					while(m<hauteur-1)
 					{
-						if(tab[h+1][l]==0) /*si la case située en dessous est vide, on peut y déplacer l'élément actuellement en cours de traitement*/
+						if(tab[m][l]!=0) /*si la case n'est pas vide, on agit*/
 						{
-							tab[h+1][l]=tab[h][l];
-							tab[h][l]=0;
-						}
-						else if(tab[h+1][l]==tab[h][l]) /*si la case située en dessous a la même valeur que la case en cours de traitement, on les "fusionne"*/
-						{
-							tab[h+1][l]=tab[h+1][l]+tab[h][l];
-							tab[h][l]=0;
-							*cases_vides = *cases_vides + 1; /*on a libéré une case du tableau*/
-							
-							if(*val_max<tab[h+1][l]) /*si la valeur maximale du tableau est celle que l'on vient de créer, on met à jour la valeur de la variable correspondante*/
+							if(tab[m+1][l]==0) /*si la case située en dessous est vide, on peut y déplacer l'élément actuellement en cours de traitement*/
 							{
-								*val_max=tab[h+1][l];
+								tab[m+1][l]=tab[m][l];
+								tab[m][l]=0;
+								m=m+1;
+							}
+							else if(tab[m+1][l]==tab[m][l]) /*si la case située en dessous a la même valeur que la case en cours de traitement, on les "fusionne"*/
+							{
+								tab[m+1][l]=tab[m+1][l]+tab[m][l];
+								tab[m][l]=0;
+								*cases_vides = *cases_vides + 1; /*on a libéré une case du tableau*/
+								
+								if(*val_max<tab[m+1][l]) /*si la valeur maximale du tableau est celle que l'on vient de créer, on met à jour la valeur de la variable correspondante*/
+								{
+									*val_max=tab[m+1][l];
+								}
+								m=hauteur;
+							}
+							else /*si on ne peut pas faire de mouvement, on arrête la boucle*/
+							{
+								m=hauteur;
 							}
 						}
-					}
-					
-					system("clear");
-					print_tableau(tab, hauteur, largeur, *val_max);
-					
+						else /*si on n'avait pas une case vide, on met fin à la boucle*/
+						{
+							m=hauteur;
+						}
+					}	
 				}
 			}
 			
@@ -397,28 +432,39 @@ void execute_action(int** tab, int hauteur, int largeur, int* val_max, int* case
 			{
 				for(h=0; h<hauteur; h=h+1)
 				{
-					if(tab[h][l]!=0) /*si la case n'est pas vide, on agit*/
+					n=l;
+					while(n<largeur-1)
 					{
-						if(tab[h][l+1]==0) /*si la case située à droite est vide, on peut y déplacer l'élément actuellement en cours de traitement*/
+						if(tab[h][n]!=0) /*si la case n'est pas vide, on agit*/
 						{
-							tab[h][l+1]=tab[h][l];
-							tab[h][l]=0;
-						}
-						else if(tab[h][l+1]==tab[h][l]) /*si la case située à droite a la même valeur que la case en cours de traitement, on les "fusionne"*/
-						{
-							tab[h][l+1]=tab[h][l+1]+tab[h][l];
-							tab[h][l]=0;
-							*cases_vides = *cases_vides + 1; /*on a libéré une case du tableau*/
-							
-							if(*val_max<tab[h][l+1]) /*si la valeur maximale du tableau est celle que l'on vient de créer, on met à jour la valeur de la variable correspondante*/
+							if(tab[h][n+1]==0) /*si la case située à droite est vide, on peut y déplacer l'élément actuellement en cours de traitement*/
 							{
-								*val_max=tab[h][l+1];
+								tab[h][n+1]=tab[h][n];
+								tab[h][n]=0;
+								n=n+1;
+							}
+							else if(tab[h][n+1]==tab[h][n]) /*si la case située à droite a la même valeur que la case en cours de traitement, on les "fusionne"*/
+							{
+								tab[h][n+1]=tab[h][n+1]+tab[h][n];
+								tab[h][n]=0;
+								*cases_vides = *cases_vides + 1; /*on a libéré une case du tableau*/
+								
+								if(*val_max<tab[h][n+1]) /*si la valeur maximale du tableau est celle que l'on vient de créer, on met à jour la valeur de la variable correspondante*/
+								{
+									*val_max=tab[h][n+1];
+								}
+								n=largeur;
+							}
+							else
+							{
+								n=largeur;
 							}
 						}
+						else
+						{
+							n=largeur;
+						}
 					}
-					
-					system("clear");
-					print_tableau(tab, hauteur, largeur, *val_max);
 				}
 			}
 			
