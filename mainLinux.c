@@ -587,6 +587,8 @@ int main()
 	}
 	horaire_fin=time(NULL);
 	
+	system("clear");
+	print_tableau(tableau, param_hauteur, param_largeur, valeur_max);
 	fin_partie(resultat, n_tour, nb_cases_vides, horaire_fin-horaire_debut);
 	
     /*à la fin du jeu, on libère la mémoire*/
