@@ -1,4 +1,5 @@
-= Deux-Mille-Quarante-Boum =
+Deux-Mille-Quarante-Boum
+========================
 
 Jeu de type 2048 codé en langage C dans le cadre d'un projet de programmation impérative.
 
