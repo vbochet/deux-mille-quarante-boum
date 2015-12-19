@@ -277,6 +277,11 @@ char choix_action(int** tab, int hauteur, int largeur, int val_max, int nb_chiff
 				faire_boucle=confirmation();
 			break;
 			
+			case 'q':
+				printf("Vous avez choisi de quitter la partie. \n");
+				faire_boucle=confirmation();
+			break;
+			
 			default:
 				printf("erreur\n");
 		}
@@ -479,7 +484,7 @@ void execute_action(int** tab, int hauteur, int largeur, int* val_max, int* case
    @assigns tab, val_max, cases_vides, n_tour
    @ensures à la fin, le joueur a effectué un tour de jeu complet
    @*/
-void tour(int** tab, int hauteur, int largeur, int* val_max, int* cases_vides, int* n_tour)
+void tour(int** tab, int hauteur, int largeur, int* val_max, int* cases_vides, int* n_tour, int* quitter)
 {
     obj nouvel_obj;
 	int nb_chiffres;
@@ -493,7 +498,10 @@ void tour(int** tab, int hauteur, int largeur, int* val_max, int* cases_vides, i
     remplir_tableau(tab, hauteur, largeur, cases_vides, nouvel_obj); /*on place le nouvel objet dans le tableau à la place indiquée*/
 	
 	action=choix_action(tab, hauteur, largeur, *val_max, nb_chiffres);
-	
+	if('q'==action) {
+		*quitter = 1;
+		return;
+	}
 	execute_action(tab, hauteur, largeur, val_max, cases_vides, action);
 	
 	
@@ -535,6 +543,7 @@ int main()
 	int horaire_debut, horaire_fin;
 	int partie_en_cours; 
 	int resultat;
+	int quitter; /*variable valant 1 si le joueur décide de quitter la partie, 0 sinon*/
 
     srand(time(NULL)); /*on initialise l'aléatoire*/
 
@@ -570,12 +579,17 @@ int main()
 	n_tour=0;
 	partie_en_cours=1;
 	horaire_debut=time(NULL);
+	quitter=0;
 
 	/*tours de jeu*/
 	while(partie_en_cours==1)
 	{
-		tour(tableau, param_hauteur, param_largeur, &valeur_max, &nb_cases_vides, &n_tour);
+		tour(tableau, param_hauteur, param_largeur, &valeur_max, &nb_cases_vides, &n_tour, &quitter);
 		
+		if(quitter==1){ /*si l'utilisateur a décidé de quitter la partie, */
+			free(tableau); /* on libère la mémoire allouée au tableau */
+			return 0; /* et on termine le programme */
+		}
 		if(valeur_max>=param_borne) {
 			partie_en_cours=0;
 			resultat = 1;
