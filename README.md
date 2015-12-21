@@ -16,6 +16,7 @@ Pour cela :
 Informations complémentaires
 ----------------------------
 
+<<<<<<< HEAD
 Ce programme a été réalisé en mode texte. 
 Au lancement, vous devez indiquer la valeur que vous souhaitez atteindre, ainsi que la hauteur et la largeur du tableau sur lequel vous jouerez.
 Lorsque vous aurez validé votre choix, vous pourrez jouer et déplacer les éléments du tableau comme suit :
@@ -23,6 +24,10 @@ Lorsque vous aurez validé votre choix, vous pourrez jouer et déplacer les él�
 - `j` pour déplacer vers la gauche ;
 - `k` pour déplacer vers le bas ;
 - `l` pour déplacer vers la droite.
+=======
+Informations complémentaires
+----------------------------
+>>>>>>> 0648fe03a1b661ce7b021a5568f380248bc30bc0
 
 Les éléments de même valeur s'additionnent, les autres s'ignorent.
 Le jeu prend fin lorsque l'une des cases du tableau au moins contient une valeur supérieure ou égale à celle fixée à l'initialisation du jeu.
