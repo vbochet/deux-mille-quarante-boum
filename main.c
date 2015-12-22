@@ -16,7 +16,7 @@ int main()
 {
     int param_borne, param_hauteur, param_largeur; /*paramètres du jeu*/
     int confirm; /*variable qui contient 0 en cas de confirmation d'une action, autre chose sinon*/
-    int ** tableau; /*tableau à deux dimensions contenant les valeurs du tableau*/
+    obj ** tableau; /*tableau à deux dimensions contenant les valeurs du tableau*/
     int h,l; /*variables de boucle for portant sur la hauteur et la largeur du tableau*/
     int nb_cases_vides, valeur_max;
 	int n_tour; /*variable contenant le nombre de tours joués, utile pour les stats de fin de partie*/
@@ -43,13 +43,14 @@ int main()
     system("clear"); /*efface l'écran avant de commencer le jeu*/
 
     /*on génère un tableau vide des dimensions choisies par le joueur*/
-    tableau=(int **)calloc(param_hauteur,sizeof(int*));
+    tableau=(obj **)calloc(param_hauteur,sizeof(obj*));
     for(h=0 ; h<param_hauteur ; h=h+1)
     {
-        tableau[h]=(int *)calloc(param_largeur,sizeof(int));
+        tableau[h]=(obj *)calloc(param_largeur,sizeof(obj));
         for(l=0; l<param_largeur; l=l+1) /*on en profite pour affecter à 0 (<=> vide) toutes les cases du tableau*/
         {
-            tableau[h][l]=0;
+            tableau[h][l].valeur=0;
+			/* pas besoin de s'occuper des autres valeurs (position et fusion) puisque l'on ne s'en servira pas (ces cases sont vides) */
         }
     }
 	

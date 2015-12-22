@@ -3,8 +3,8 @@
 
 #include <stdio.h>
 #include <stdlib.h> /*pour l'aléatoire*/
-#include <string.h> /*pour la comparaison des chaînes de caractères*/
 #include <time.h> /*pour l'aléatoire*/
+#include <string.h> /*pour la comparaison des chaînes de caractères*/
 
 
 /* @requires

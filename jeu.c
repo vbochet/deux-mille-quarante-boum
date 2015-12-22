@@ -30,7 +30,7 @@ obj nouvel_objet(int cases_vides, int valeur_max)
 	}
 
     nouv_objet.position=alea_bornes(0,cases_vides); /*numéro de la case vide où placer ce nouvel objet*/
-    nouv_objet.type=1;
+    nouv_objet.fusion=0 /*l'objet ne résulte pas d'une fusion, donc fusion=0 qui est inférieur au n° du tour*/;
     nouv_objet.valeur=valeur;
 
     return nouv_objet;
@@ -41,7 +41,7 @@ obj nouvel_objet(int cases_vides, int valeur_max)
    @assigns 
    @ensures à la fin, le joueur a effectué un choix de mouvement valide
    @*/
-char choix_action(int** tab, int hauteur, int largeur, int val_max, int nb_chiffres)
+char choix_action(obj** tab, int hauteur, int largeur, int val_max, int nb_chiffres)
 {
 	int faire_boucle,n;
 	char action;
@@ -104,10 +104,10 @@ char choix_action(int** tab, int hauteur, int largeur, int val_max, int nb_chiff
    @assigns tab, val_max, cases_vides
    @ensures à la fin, on a effectué tous les déplacements du tour
    @*/
-void execute_action(int** tab, int hauteur, int largeur, int* val_max, int* cases_vides, char action)
+void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* cases_vides, int nb_tour, char action)
 {
 	int h,l; /*variables de boucles correspondant aux lignes et aux colonnes*/
-	int m,n; /**/
+	int m,n; /*idem*/
 	
 	switch(action) {
 		case 'i': /*déplacement vers le haut*/
@@ -118,23 +118,24 @@ void execute_action(int** tab, int hauteur, int largeur, int* val_max, int* case
 					m=h;
 					while(m>0)
 					{
-						if(tab[m][l]!=0) /*si la case n'est pas vide, on agit*/
+						if(tab[m][l].valeur!=0) /*si la case n'est pas vide, on agit*/
 						{
-							if(tab[m-1][l]==0) /*si la case située au dessus est vide, on peut y déplacer l'élément actuellement en cours de traitement*/
+							if(tab[m-1][l].valeur==0) /*si la case située au dessus est vide, on peut y déplacer l'élément actuellement en cours de traitement*/
 							{
-								tab[m-1][l]=tab[m][l]; /*on swap les cases*/
-								tab[m][l]=0;
+								tab[m-1][l].valeur=tab[m][l].valeur; /*on swap les cases*/
+								tab[m][l].valeur=0;
 								m=m-1; /*on travaille sur la case du dessus pour poursuivre le déplacement*/
 							}
-							else if(tab[m-1][l]==tab[m][l]) /*si la case située au dessus a la même valeur que la case en cours de traitement, on les "fusionne"*/
+							else if((tab[m-1][l].valeur==tab[m][l].valeur) && (tab[m-1][l].fusion<nb_tour)) /*si la case située au dessus a la même valeur que la case en cours de traitement, et que la case au dessus ne résulte pas d'une fusion à ce tour, on les "fusionne"*/
 							{
-								tab[m-1][l]=tab[m-1][l]+tab[m][l];
-								tab[m][l]=0;
+								tab[m-1][l].valeur=tab[m-1][l].valeur+tab[m][l].valeur;
+								tab[m-1][l].fusion=nb_tour;
+								tab[m][l].valeur=0;
 								*cases_vides = *cases_vides + 1; /*on a libéré une case du tableau*/
 								
-								if(*val_max<tab[m-1][l]) /*si la valeur maximale du tableau est celle que l'on vient de créer, on met à jour la valeur de la variable correspondante*/
+								if(*val_max<tab[m-1][l].valeur) /*si la valeur maximale du tableau est celle que l'on vient de créer, on met à jour la valeur de la variable correspondante*/
 								{
-									*val_max=tab[m-1][l];
+									*val_max=tab[m-1][l].valeur;
 								}
 								m=0; /*on sort de la boucle dès lors qu'on a fait une somme avec une autre case. en effet, si on ne s'arrête pas, on risque de sommer des cases qui viennent d'être crées pendant le tour*/
 							}
@@ -160,23 +161,24 @@ void execute_action(int** tab, int hauteur, int largeur, int* val_max, int* case
 					n=l;
 					while(n>0)
 					{
-						if(tab[h][n]!=0) /*si la case n'est pas vide, on agit*/
+						if(tab[h][n].valeur!=0) /*si la case n'est pas vide, on agit*/
 						{
-							if(tab[h][n-1]==0) /*si la case située à gauche est vide, on peut y déplacer l'élément actuellement en cours de traitement*/
+							if(tab[h][n-1].valeur==0) /*si la case située à gauche est vide, on peut y déplacer l'élément actuellement en cours de traitement*/
 							{
-								tab[h][n-1]=tab[h][n];
-								tab[h][n]=0;
+								tab[h][n-1].valeur=tab[h][n].valeur;
+								tab[h][n].valeur=0;
 								n=n-1;
 							}
-							else if(tab[h][n-1]==tab[h][n]) /*si la case située à gauche a la même valeur que la case en cours de traitement, on les "fusionne"*/
+							else if((tab[h][n-1].valeur==tab[h][n].valeur) && (tab[h][n-1].fusion < nb_tour)) /*si la case située à gauche a la même valeur que la case en cours de traitement, et que la case à gauche ne résulte pas d'une fusion à ce tour, on les "fusionne"*/
 							{
-								tab[h][n-1]=tab[h][n-1]+tab[h][n];
-								tab[h][n]=0;
+								tab[h][n-1].valeur=tab[h][n-1].valeur+tab[h][n].valeur;
+								tab[h][n-1].fusion=nb_tour;
+								tab[h][n].valeur=0;
 								*cases_vides = *cases_vides + 1; /*on a libéré une case du tableau*/
 								
-								if(*val_max<tab[h][n-1]) /*si la valeur maximale du tableau est celle que l'on vient de créer, on met à jour la valeur de la variable correspondante*/
+								if(*val_max<tab[h][n-1].valeur) /*si la valeur maximale du tableau est celle que l'on vient de créer, on met à jour la valeur de la variable correspondante*/
 								{
-									*val_max=tab[h][n-1];
+									*val_max=tab[h][n-1].valeur;
 								}
 								n=0;
 							}
@@ -202,23 +204,24 @@ void execute_action(int** tab, int hauteur, int largeur, int* val_max, int* case
 					m=h;
 					while(m<hauteur-1)
 					{
-						if(tab[m][l]!=0) /*si la case n'est pas vide, on agit*/
+						if(tab[m][l].valeur!=0) /*si la case n'est pas vide, on agit*/
 						{
-							if(tab[m+1][l]==0) /*si la case située en dessous est vide, on peut y déplacer l'élément actuellement en cours de traitement*/
+							if(tab[m+1][l].valeur==0) /*si la case située en dessous est vide, on peut y déplacer l'élément actuellement en cours de traitement*/
 							{
-								tab[m+1][l]=tab[m][l];
-								tab[m][l]=0;
+								tab[m+1][l].valeur=tab[m][l].valeur;
+								tab[m][l].valeur=0;
 								m=m+1;
 							}
-							else if(tab[m+1][l]==tab[m][l]) /*si la case située en dessous a la même valeur que la case en cours de traitement, on les "fusionne"*/
+							else if((tab[m+1][l].valeur==tab[m][l].valeur) && (tab[m+1][l].fusion < nb_tour)) /*si la case située en dessous a la même valeur que la case en cours de traitement, et que la case en dessous ne résulte pas d'une fusion à ce tour, on les "fusionne"*/
 							{
-								tab[m+1][l]=tab[m+1][l]+tab[m][l];
-								tab[m][l]=0;
+								tab[m+1][l].valeur=tab[m+1][l].valeur+tab[m][l].valeur;
+								tab[m+1][l].fusion=nb_tour;
+								tab[m][l].valeur=0;
 								*cases_vides = *cases_vides + 1; /*on a libéré une case du tableau*/
 								
-								if(*val_max<tab[m+1][l]) /*si la valeur maximale du tableau est celle que l'on vient de créer, on met à jour la valeur de la variable correspondante*/
+								if(*val_max<tab[m+1][l].valeur) /*si la valeur maximale du tableau est celle que l'on vient de créer, on met à jour la valeur de la variable correspondante*/
 								{
-									*val_max=tab[m+1][l];
+									*val_max=tab[m+1][l].valeur;
 								}
 								m=hauteur;
 							}
@@ -244,23 +247,24 @@ void execute_action(int** tab, int hauteur, int largeur, int* val_max, int* case
 					n=l;
 					while(n<largeur-1)
 					{
-						if(tab[h][n]!=0) /*si la case n'est pas vide, on agit*/
+						if(tab[h][n].valeur!=0) /*si la case n'est pas vide, on agit*/
 						{
-							if(tab[h][n+1]==0) /*si la case située à droite est vide, on peut y déplacer l'élément actuellement en cours de traitement*/
+							if(tab[h][n+1].valeur==0) /*si la case située à droite est vide, on peut y déplacer l'élément actuellement en cours de traitement*/
 							{
-								tab[h][n+1]=tab[h][n];
-								tab[h][n]=0;
+								tab[h][n+1].valeur=tab[h][n].valeur;
+								tab[h][n].valeur=0;
 								n=n+1;
 							}
-							else if(tab[h][n+1]==tab[h][n]) /*si la case située à droite a la même valeur que la case en cours de traitement, on les "fusionne"*/
+							else if((tab[h][n+1].valeur==tab[h][n].valeur) && (tab[h][n+1].fusion < nb_tour)) /*si la case située à droite a la même valeur que la case en cours de traitement, et que la case à droite ne résulte pas d'une fusion à ce tour, on les "fusionne"*/
 							{
-								tab[h][n+1]=tab[h][n+1]+tab[h][n];
-								tab[h][n]=0;
+								tab[h][n+1].valeur=tab[h][n+1].valeur+tab[h][n].valeur;
+								tab[h][n+1].fusion=nb_tour;
+								tab[h][n].valeur=0;
 								*cases_vides = *cases_vides + 1; /*on a libéré une case du tableau*/
 								
-								if(*val_max<tab[h][n+1]) /*si la valeur maximale du tableau est celle que l'on vient de créer, on met à jour la valeur de la variable correspondante*/
+								if(*val_max<tab[h][n+1].valeur) /*si la valeur maximale du tableau est celle que l'on vient de créer, on met à jour la valeur de la variable correspondante*/
 								{
-									*val_max=tab[h][n+1];
+									*val_max=tab[h][n+1].valeur;
 								}
 								n=largeur;
 							}
@@ -287,7 +291,7 @@ void execute_action(int** tab, int hauteur, int largeur, int* val_max, int* case
    @assigns tab, val_max, cases_vides, n_tour
    @ensures à la fin, le joueur a effectué un tour de jeu complet
    @*/
-void tour(int** tab, int hauteur, int largeur, int* val_max, int* cases_vides, int* n_tour, int* quitter)
+void tour(obj** tab, int hauteur, int largeur, int* val_max, int* cases_vides, int* n_tour, int* quitter)
 {
     obj nouvel_obj;
 	int nb_chiffres;
@@ -305,5 +309,5 @@ void tour(int** tab, int hauteur, int largeur, int* val_max, int* cases_vides, i
 		*quitter = 1;
 		return;
 	}
-	execute_action(tab, hauteur, largeur, val_max, cases_vides, action);
+	execute_action(tab, hauteur, largeur, val_max, cases_vides, *n_tour, action);
 }

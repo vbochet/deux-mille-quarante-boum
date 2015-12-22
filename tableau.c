@@ -13,7 +13,7 @@
    @assigns tab, cases_vides
    @ensures à la fin, le nouvel objet est placé au bon endroit dans le tableau
    @*/
-void remplir_tableau(int** tableau, int hauteur, int largeur, int* cases_vides, obj nouv_objet)
+void remplir_tableau(obj** tableau, int hauteur, int largeur, int* cases_vides, obj nouv_objet)
 {
     int h, l, cpt;
     h=0; cpt=0;
@@ -23,11 +23,11 @@ void remplir_tableau(int** tableau, int hauteur, int largeur, int* cases_vides, 
         l=0;
         while(l<largeur) /*s'arrête pour les mêmes raisons que la boucle précédente*/
         {
-            if(tableau[h][l]==0) /*si la case vaut 0, alors c'est une case vide*/
+            if((tableau[h][l]).valeur==0) /*si la case vaut 0, alors c'est une case vide*/
             {
                 if(nouv_objet.position==cpt) /*si c'est la position pour le nouvel objet, on l'y place et on termine la boucle*/
                 {
-                    tableau[h][l]=nouv_objet.valeur;
+                    tableau[h][l]=nouv_objet;
                     h=hauteur; /*on met fin à la boucle sur h*/
                     l=largeur; /*on met fin à la boucle sur l*/
 					*cases_vides = *cases_vides - 1; 
@@ -52,7 +52,7 @@ void remplir_tableau(int** tableau, int hauteur, int largeur, int* cases_vides, 
    @assigns
    @ensures affiche le tableau
    @*/
-void print_tableau(int** tab, int hauteur, int largeur, int val_max)
+void print_tableau(obj** tab, int hauteur, int largeur, int val_max)
 {
   int h, l;
   int n;
@@ -80,13 +80,13 @@ void print_tableau(int** tab, int hauteur, int largeur, int val_max)
     /*affichage des lignes comportant du contenu*/
     for(l=0; l<largeur; l=l+1)
     {
-      if(tab[h][l]!=0)
+      if((tab[h][l]).valeur!=0)
       {
-	printf("|%*i", nb_chiffres, tab[h][l]);
+		printf("|%*i", nb_chiffres, (tab[h][l]).valeur);
       }
       else
       {
-	printf("|%*s", nb_chiffres, "");
+		printf("|%*s", nb_chiffres, "");
       }
     }
     printf("|\n");
