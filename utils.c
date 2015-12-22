@@ -35,9 +35,9 @@ int confirmation() /*fonction de demande de confirmation*/
    @assigns
    @ensures renvoie un entier aléatoire compris entre a inclus et b exclus
    @*/
-int alea_bornes(int a, int b) /* ATTENTION : IL N'Y A PAS PROBABILITÉ UNIFORME. POUR CORRIGER CELA, CF. LES NOTES PRISES EN TP D'IPI ! */
+int alea_bornes(int a, int b) 
 {
-    return rand()%(b-a) + a;
+	return ((int)((float)rand() / (RAND_MAX) * (b-a))) + a; /* cette formule nous permet d'obtenir une équiprobabilité du tirage */
 }
 
 
