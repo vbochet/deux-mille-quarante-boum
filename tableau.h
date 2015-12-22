@@ -5,5 +5,6 @@
 
 void remplir_tableau(obj** tableau, int hauteur, int largeur, int* cases_vides, obj nouv_objet);
 void print_tableau(obj** tab, int hauteur, int largeur, int val_max);
+void liberer_tableau(obj** tableau, int hauteur);
 
 #endif

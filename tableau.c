@@ -108,3 +108,16 @@ void print_tableau(obj** tab, int hauteur, int largeur, int val_max)
     printf("\n");
 	printf("\n");
 }
+
+
+/* @requires hauteur>1
+   @assigns
+   @ensures libère les lignes du tableau, puis le tableau
+   @*/
+void liberer_tableau(obj** tableau, int hauteur){
+	int h;
+	for(h=0 ; h<hauteur ; h=h+1){
+		free(tableau[h]);
+	}
+	free(tableau);
+}

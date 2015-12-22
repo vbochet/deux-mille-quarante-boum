@@ -68,7 +68,7 @@ int main()
 		tour(tableau, param_hauteur, param_largeur, &valeur_max, &nb_cases_vides, &n_tour, &quitter);
 		
 		if(quitter==1){ /*si l'utilisateur a décidé de quitter la partie, */
-			free(tableau); /* on libère la mémoire allouée au tableau */
+			liberer_tableau(tableau, param_hauteur); /* on libère la mémoire allouée au tableau */
 			return 0; /* et on termine le programme */
 		}
 		if(valeur_max>=param_borne) {
@@ -87,6 +87,6 @@ int main()
 	fin_partie(resultat, n_tour, nb_cases_vides, horaire_fin-horaire_debut);
 	
     /*à la fin du jeu, on libère la mémoire*/
-    free(tableau);
+    liberer_tableau(tableau, param_hauteur);
     return 0;
 }
