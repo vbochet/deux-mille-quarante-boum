@@ -4,7 +4,7 @@
 #le nom de l'exécutable généré. Peut être modifié.
 APPLI=deuxmillequaranteboum
 #liste des fichiers à compiler.
-CSRC= main.c jeu.c jeu_fin.c jeu_init.c tableau.c utils.c
+CSRC= main.c bombes.c jeu.c jeu_fin.c jeu_init.c tableau.c utils.c
 #compilateur à utiliser
 CC = gcc
 
