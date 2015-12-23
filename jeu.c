@@ -119,9 +119,17 @@ char choix_action(obj** tab, int hauteur, int largeur, int val_max, int nb_chiff
 				printf("Vous avez choisi de faire exploser une bombe. Quelles sont ses coordonnées ? \n");
 				printf("Hauteur : ");
 				scanf("%d", coordh); /* on récupère la hauteur de la bombe */
+				if((*coordh >= hauteur) && (*coordh < 0)) { /* on vérifie la validité de la valeur indiquée */
+					printf("Erreur : la valeur indiquiée est invalide. \nHauteur : ");
+					scanf("%d", coordh); /* on récupère la hauteur de la bombe */
+				}
 				*coordh = hauteur - (*coordh) - 1; /* pour le joueur, l'origine du tableau est en bas à gauche. Pour le code, l'origine est en haut à gauche. On doit donc "renverser" la valeur de la hauteur pour que cela corresponde. */
 				printf("Largeur : ");
 				scanf("%d", coordl); /* on récupère la largeur de la bombe */
+				if((*coordl >= largeur) && (*coordl < 0)) { /* on vérifie la validité de la valeur indiquée */
+					printf("Erreur : la valeur indiquiée est invalide. \nLargeur : ");
+					scanf("%d", coordl); /* on récupère la hauteur de la bombe */
+				}
 				
 				/* on vérifie que c'est une bombe */
 				if((tab[*coordh][*coordl]).valeur < 0) { /* si oui, on peut demander confirmation au joueur */

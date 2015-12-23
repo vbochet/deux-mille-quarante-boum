@@ -20,6 +20,7 @@ void explosion(obj** tab, int hauteur, int largeur, int* cases_vides, int h, int
 	bombe = tab[h][l];
 	
 	tab[h][l].valeur = 0; /* on fait "exploser" la bombe : la case sur laquelle elle était devient vide */
+	*cases_vides = *cases_vides + 1; /* on rajoute une case vide au compteur */
 	
 	/* on traite ensuite les cases alentour, selon le type de bombe */
 	if(bombe.valeur <= -21) { /* si c'est un *, on regarde toutes les cases dans un rayon de 1 case autour de la position de la bombe */
