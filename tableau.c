@@ -79,8 +79,17 @@ void print_tableau(obj** tab, int hauteur, int largeur, int val_max) /* fonction
 
 		/* affichage des lignes comportant du contenu */
 		for(l = 0; l < largeur; l = l+1) {
-			if((tab[h][l]).valeur != 0) { /* si la case n'est pas vide, on affiche son contenu */
+			if((tab[h][l]).valeur > 0) { /* si la case contient un nombre positif, on affiche son contenu */
 				printf("|%*d", nb_chiffres, (tab[h][l]).valeur); /* idem ici pour %*d, on peut adapter la taille de l'affichage de l'int */
+			}
+			else if((tab[h][l]).valeur < -21) { /* si la case contient un nombre < -21, on affiche une bombe * */
+				printf("|%*s", nb_chiffres, "*"); 
+			}
+			else if((tab[h][l]).valeur < -11) { /* si la case contient un nombre < -11, on affiche une bombe x (pas de souci avec les bombes * car le cas où la valeur de la case est < -21 est déjà traité dans un else if) */
+				printf("|%*s", nb_chiffres, "x"); 
+			}
+			else if((tab[h][l]).valeur < -1) { /* si la case contient un nombre < -1, on affiche une bombe + (pas de souci avec les bombes x et * car le cas où la valeur de la case est < -11 ou -21 est déjà traité dans des else if) */
+				printf("|%*s", nb_chiffres, "x"); 
 			}
 			else {
 				printf("|%*s", nb_chiffres, ""); /* si la case est vide, on n'affiche pas de contenu */
