@@ -201,7 +201,7 @@ void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* case
 								if((tab[m-1][l].valeur <= -21) && (tab[m][l].valeur <= -21)) { 
 								/* on a deux bombes *, on les fusionne => explosion de celle sur la case d'arrivée */
 									tab[m][l].valeur = 0; /* on vide la case en cours de traitement */
-									explosion(tab, hauteur, largeur, m-1, l); /* on fait exploser la bombe de la case d'arrivée */
+									explosion(tab, hauteur, largeur, cases_vides, m-1, l); /* on fait exploser la bombe de la case d'arrivée */
 								}
 								else if((tab[m-1][l].valeur <= -11) && (tab[m][l].valeur <= -11) && (tab[m-1][l].valeur > -21) && (tab[m][l].valeur > -21)) { 
 								/* on a deux bombes x, on les fusionne => on a une bombe * sur la case d'arrivée */
@@ -257,7 +257,7 @@ void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* case
 								if((tab[h][n-1].valeur <= -21) && (tab[h][n].valeur <= -21)) { 
 								/* on a deux bombes *, on les fusionne => explosion de celle sur la case d'arrivée */
 									tab[h][n].valeur = 0; /* on vide la case en cours de traitement */
-									explosion(tab, hauteur, largeur, h, n-1); /* on fait exploser la bombe de la case d'arrivée */
+									explosion(tab, hauteur, largeur, cases_vides, h, n-1); /* on fait exploser la bombe de la case d'arrivée */
 								}
 								else if((tab[h][n-1].valeur <= -11) && (tab[h][n].valeur <= -11) && (tab[h][n-1].valeur > -21) && (tab[h][n].valeur > -21)) { 
 								/* on a deux bombes x, on les fusionne => on a une bombe * sur la case d'arrivée */
@@ -312,7 +312,7 @@ void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* case
 								if((tab[m+1][l].valeur <= -21) && (tab[m][l].valeur <= -21)) { 
 								/* on a deux bombes *, on les fusionne => explosion de celle sur la case d'arrivée */
 									tab[m][l].valeur = 0; /* on vide la case en cours de traitement */
-									explosion(tab, hauteur, largeur, m+1, l); /* on fait exploser la bombe de la case d'arrivée */
+									explosion(tab, hauteur, largeur, cases_vides, m+1, l); /* on fait exploser la bombe de la case d'arrivée */
 								}
 								else if((tab[m+1][l].valeur <= -11) && (tab[m][l].valeur <= -11) && (tab[m+1][l].valeur > -21) && (tab[m][l].valeur > -21)) { 
 								/* on a deux bombes x, on les fusionne => on a une bombe * sur la case d'arrivée */
@@ -367,7 +367,7 @@ void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* case
 								if((tab[h][n+1].valeur <= -21) && (tab[h][n].valeur <= -21)) { 
 								/* on a deux bombes *, on les fusionne => explosion de celle sur la case d'arrivée */
 									tab[h][n].valeur = 0; /* on vide la case en cours de traitement */
-									explosion(tab, hauteur, largeur, h, n+1); /* on fait exploser la bombe de la case d'arrivée */
+									explosion(tab, hauteur, largeur, cases_vides, h, n+1); /* on fait exploser la bombe de la case d'arrivée */
 								}
 								else if((tab[h][n+1].valeur <= -11) && (tab[h][n].valeur <= -11) && (tab[h][n+1].valeur > -21) && (tab[h][n].valeur > -21)) { 
 								/* on a deux bombes x, on les fusionne => on a une bombe * sur la case d'arrivée */
@@ -397,7 +397,7 @@ void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* case
 		break;
 		
 		case 'b': /* explosion d'une bombe (vérifiée auparavant dans la fonction choix_action */
-			explosion(tab, hauteur, largeur, coordh, coordl);
+			explosion(tab, hauteur, largeur, cases_vides, coordh, coordl);
 		break;
 	}
 }
@@ -418,7 +418,7 @@ void tour(obj** tab, int hauteur, int largeur, int* val_max, int* cases_vides, i
 	*n_tour = *n_tour+1;
 	
 	/* avant de commencer le tour en ajoutant un nouvel objet, on incrémente le nombre de tours de chaque bombe, on vérifie si des bombes doivent exploser spontanément, et on réalise les explosions le cas échéant */
-	check_bombes(tab, hauteur, largeur);
+	check_bombes(tab, hauteur, largeur, cases_vides);
 	
 	/* on peut ensuite reprendre le déroulement classique d'un tour de jeu */
     nouvel_obj = nouvel_objet(*cases_vides, *val_max); /*on génère le nouvel objet à ajouter à notre tableau de jeu*/
