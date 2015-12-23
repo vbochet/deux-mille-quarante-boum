@@ -28,7 +28,7 @@ void explosion(obj** tab, int hauteur, int largeur, int* cases_vides, int h, int
 				for(n = l-1; n <= n+1; n = n+1) {
 					if((n >= 0) && (n < largeur)) {/* si la case qu'on veut traiter existe bien (càd qu'elle est dans le tableau, donc n compris entre 0 et largeur-1) */
 						if(tab[m][n].valeur < 0) { /* si la case voisine est une bombe, on la fait exploser aussi */
-							explosion(tab, hauteur, largeur, m, n);
+							explosion(tab, hauteur, largeur, cases_vides, m, n);
 						}
 						else { /* sinon, on fait simplement disparaitre l'élément du tableau */
 							if(tab[m][n].valeur != 0) { /* si la case contient un nombre positif */
@@ -45,7 +45,7 @@ void explosion(obj** tab, int hauteur, int largeur, int* cases_vides, int h, int
 	else if(bombe.valeur <= -11) { /* si c'est un x, on regarde les cases en diagonale autour de la position de la bombe */
 		if((h-1 > 0) && (l-1 > 0)) { /* la case en diagonale haut-gauche existe-t-elle ? */
 			if(tab[h-1][l-1].valeur < 0) { /* si la case voisine est une bombe, on la fait exploser aussi */
-				explosion(tab, hauteur, largeur, h-1, l-1);
+				explosion(tab, hauteur, largeur, cases_vides, h-1, l-1);
 			}
 			else { /* sinon, on fait simplement disparaitre l'élément du tableau */
 				if(tab[h-1][l-1].valeur != 0) { /* si la case contient un nombre positif */
@@ -58,7 +58,7 @@ void explosion(obj** tab, int hauteur, int largeur, int* cases_vides, int h, int
 		
 		if((h-1 > 0) && (l+1 < largeur)) { /* la case en diagonale haut-droite existe-t-elle ? */
 			if(tab[h-1][l+1].valeur < 0) { /* si la case voisine est une bombe, on la fait exploser aussi */
-				explosion(tab, hauteur, largeur, h-1, l+1);
+				explosion(tab, hauteur, largeur, cases_vides, h-1, l+1);
 			}
 			else { /* sinon, on fait simplement disparaitre l'élément du tableau */
 				if(tab[h-1][l+1].valeur != 0) { /* si la case contient un nombre positif */
@@ -71,7 +71,7 @@ void explosion(obj** tab, int hauteur, int largeur, int* cases_vides, int h, int
 		
 		if((h+1 < hauteur) && (l-1 > 0)) { /* la case en diagonale bas-gauche existe-t-elle ? */
 			if(tab[h+1][l-1].valeur < 0) { /* si la case voisine est une bombe, on la fait exploser aussi */
-				explosion(tab, hauteur, largeur, h+1, l-1);
+				explosion(tab, hauteur, largeur, cases_vides, h+1, l-1);
 			}
 			else { /* sinon, on fait simplement disparaitre l'élément du tableau */
 				if(tab[h+1][l-1].valeur != 0) { /* si la case contient un nombre positif */
@@ -84,7 +84,7 @@ void explosion(obj** tab, int hauteur, int largeur, int* cases_vides, int h, int
 		
 		if((h+1 < hauteur) && (l+1 < largeur)) { /* la case en diagonale bas-gauche existe-t-elle ? */
 			if(tab[h+1][l+1].valeur < 0) { /* si la case voisine est une bombe, on la fait exploser aussi */
-				explosion(tab, hauteur, largeur, h+1, l+1);
+				explosion(tab, hauteur, largeur, cases_vides, h+1, l+1);
 			}
 			else { /* sinon, on fait simplement disparaitre l'élément du tableau */
 				if(tab[h+1][l+1].valeur != 0) { /* si la case contient un nombre positif */
@@ -98,7 +98,7 @@ void explosion(obj** tab, int hauteur, int largeur, int* cases_vides, int h, int
 	else if(bombe.valeur <= -1) { /* si c'est un +, on regarde les cases latérales autour de la position de la bombe */
 		if(l-1 > 0) { /* la case à gauche existe-t-elle ? */
 			if(tab[h][l-1].valeur < 0) { /* si la case voisine est une bombe, on la fait exploser aussi */
-				explosion(tab, hauteur, largeur, h, l-1);
+				explosion(tab, hauteur, largeur, cases_vides, h, l-1);
 			}
 			else { /* sinon, on fait simplement disparaitre l'élément du tableau */
 				if(tab[h][l-1].valeur != 0) { /* si la case contient un nombre positif */
@@ -111,7 +111,7 @@ void explosion(obj** tab, int hauteur, int largeur, int* cases_vides, int h, int
 		
 		if(l+1 < largeur) { /* la case à droite existe-t-elle ? */
 			if(tab[h][l+1].valeur < 0) { /* si la case voisine est une bombe, on la fait exploser aussi */
-				explosion(tab, hauteur, largeur, h, l-1);
+				explosion(tab, hauteur, largeur, cases_vides, h, l-1);
 			}
 			else { /* sinon, on fait simplement disparaitre l'élément du tableau */
 				if(tab[h][l+1].valeur != 0) { /* si la case contient un nombre positif */
@@ -124,7 +124,7 @@ void explosion(obj** tab, int hauteur, int largeur, int* cases_vides, int h, int
 		
 		if(h+1 < hauteur) { /* la case en dessous existe-t-elle ? */
 			if(tab[h+1][l].valeur < 0) { /* si la case voisine est une bombe, on la fait exploser aussi */
-				explosion(tab, hauteur, largeur, h-1, l);
+				explosion(tab, hauteur, largeur, cases_vides, h-1, l);
 			}
 			else { /* sinon, on fait simplement disparaitre l'élément du tableau */
 				if(tab[h+1][l].valeur != 0) { /* si la case contient un nombre positif */
@@ -137,7 +137,7 @@ void explosion(obj** tab, int hauteur, int largeur, int* cases_vides, int h, int
 		
 		if(h-1 > 0) { /* la case au dessus existe-t-elle ? */
 			if(tab[h-1][l].valeur < 0) { /* si la case voisine est une bombe, on la fait exploser aussi */
-				explosion(tab, hauteur, largeur, h-1, l);
+				explosion(tab, hauteur, largeur, cases_vides, h-1, l);
 			}
 			else { /* sinon, on fait simplement disparaitre l'élément du tableau */
 				if(tab[h-1][l].valeur != 0) { /* si la case contient un nombre positif */
