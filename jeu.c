@@ -198,15 +198,18 @@ void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* case
 								m = 0; /* on sort de la boucle dès lors qu'on a fait une somme avec une autre case. en effet, si on ne s'arrête pas, on risque de sommer des cases qui viennent d'être crées pendant le tour */
 							}
 							else if((tab[m-1][l].valeur < 0) && (tab[m][l].valeur < 0) && (tab[m-1][l].fusion < nb_tour)) { /* si la case située au dessus et la case en cours de traitement sont des bombes, et que la case au dessus ne résulte pas d'une fusion à ce tour, on procède à des tests spécifiques */
-								if((tab[m-1][l].valeur <= -21) && (tab[m][l].valeur <= -21)) { /* on a deux bombes *, on les fusionne => explosion de celle sur la case d'arrivée */
+								if((tab[m-1][l].valeur <= -21) && (tab[m][l].valeur <= -21)) { 
+								/* on a deux bombes *, on les fusionne => explosion de celle sur la case d'arrivée */
 									tab[m][l].valeur = 0; /* on vide la case en cours de traitement */
 									explosion(tab, hauteur, largeur, m-1, l); /* on fait exploser la bombe de la case d'arrivée */
 								}
-								else if((tab[m-1][l].valeur <= -11) && (tab[m][l].valeur <= -11)) { /* on a deux bombes x, on les fusionne => on a une bombe * sur la case d'arrivée */
+								else if((tab[m-1][l].valeur <= -11) && (tab[m][l].valeur <= -11) && (tab[m-1][l].valeur > -21) && (tab[m][l].valeur > -21)) { 
+								/* on a deux bombes x, on les fusionne => on a une bombe * sur la case d'arrivée */
 									tab[m][l].valeur = 0; /* on vide la case en cours de traitement */
 									tab[m-1][l].valeur = -21; /* on obtient une bombe * sur la case d'arrivée */
 								}
-								else if((tab[m-1][l].valeur <= -1) && (tab[m][l].valeur <= -1)) { /* on a deux bombes +, on les fusionne => on a une bombe x sur la case d'arrivée */
+								else if((tab[m-1][l].valeur <= -1) && (tab[m][l].valeur <= -1) && (tab[m-1][l].valeur > -11) && (tab[m][l].valeur > -11)) { 
+								/* on a deux bombes +, on les fusionne => on a une bombe x sur la case d'arrivée */
 									tab[m][l].valeur = 0; /* on vide la case en cours de traitement */
 									tab[m-1][l].valeur = -11; /* on obtient une bombe x sur la case d'arrivée */
 								}
@@ -251,15 +254,18 @@ void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* case
 								n = 0;
 							}
 							else if((tab[h][n-1].valeur < 0) && (tab[h][n].valeur < 0) && (tab[h][n-1].fusion < nb_tour)) { /* si la case située à gauche et la case en cours de traitement sont des bombes, et que la case à gauche ne résulte pas d'une fusion à ce tour, on procède à des tests spécifiques */
-								if((tab[h][n-1].valeur <= -21) && (tab[h][n].valeur <= -21)) { /* on a deux bombes *, on les fusionne => explosion de celle sur la case d'arrivée */
+								if((tab[h][n-1].valeur <= -21) && (tab[h][n].valeur <= -21)) { 
+								/* on a deux bombes *, on les fusionne => explosion de celle sur la case d'arrivée */
 									tab[h][n].valeur = 0; /* on vide la case en cours de traitement */
 									explosion(tab, hauteur, largeur, h, n-1); /* on fait exploser la bombe de la case d'arrivée */
 								}
-								else if((tab[h][n-1].valeur <= -11) && (tab[h][n].valeur <= -11)) { /* on a deux bombes x, on les fusionne => on a une bombe * sur la case d'arrivée */
+								else if((tab[h][n-1].valeur <= -11) && (tab[h][n].valeur <= -11) && (tab[h][n-1].valeur > -21) && (tab[h][n].valeur > -21)) { 
+								/* on a deux bombes x, on les fusionne => on a une bombe * sur la case d'arrivée */
 									tab[h][n].valeur = 0; /* on vide la case en cours de traitement */
 									tab[h][n-1].valeur = -21; /* on obtient une bombe * sur la case d'arrivée */
 								}
-								else if((tab[h][n-1].valeur <= -1) && (tab[h][n].valeur <= -1)) { /* on a deux bombes +, on les fusionne => on a une bombe x sur la case d'arrivée */
+								else if((tab[h][n-1].valeur <= -1) && (tab[h][n].valeur <= -1) && (tab[h][n-1].valeur > -11) && (tab[h][n].valeur > -11)) { 
+								/* on a deux bombes +, on les fusionne => on a une bombe x sur la case d'arrivée */
 									tab[h][n].valeur = 0; /* on vide la case en cours de traitement */
 									tab[h][n-1].valeur = -11; /* on obtient une bombe x sur la case d'arrivée */
 								}
@@ -303,15 +309,18 @@ void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* case
 								m = hauteur;
 							}
 							else if((tab[m+1][l].valeur < 0) && (tab[m][l].valeur < 0) && (tab[m+1][l].fusion < nb_tour)) { /* si la case située en dessous et la case en cours de traitement sont des bombes, et que la case en dessous ne résulte pas d'une fusion à ce tour, on procède à des tests spécifiques */
-								if((tab[m+1][l].valeur <= -21) && (tab[m][l].valeur <= -21)) { /* on a deux bombes *, on les fusionne => explosion de celle sur la case d'arrivée */
+								if((tab[m+1][l].valeur <= -21) && (tab[m][l].valeur <= -21)) { 
+								/* on a deux bombes *, on les fusionne => explosion de celle sur la case d'arrivée */
 									tab[m][l].valeur = 0; /* on vide la case en cours de traitement */
 									explosion(tab, hauteur, largeur, m+1, l); /* on fait exploser la bombe de la case d'arrivée */
 								}
-								else if((tab[m+1][l].valeur <= -11) && (tab[m][l].valeur <= -11)) { /* on a deux bombes x, on les fusionne => on a une bombe * sur la case d'arrivée */
+								else if((tab[m+1][l].valeur <= -11) && (tab[m][l].valeur <= -11) && (tab[m+1][l].valeur > -21) && (tab[m][l].valeur > -21)) { 
+								/* on a deux bombes x, on les fusionne => on a une bombe * sur la case d'arrivée */
 									tab[m][l].valeur = 0; /* on vide la case en cours de traitement */
 									tab[m+1][l].valeur = -21; /* on obtient une bombe * sur la case d'arrivée */
 								}
-								else if((tab[m+1][l].valeur <= -1) && (tab[m][l].valeur <= -1)) { /* on a deux bombes +, on les fusionne => on a une bombe x sur la case d'arrivée */
+								else if((tab[m+1][l].valeur <= -1) && (tab[m][l].valeur <= -1) && (tab[m+1][l].valeur > -11) && (tab[m][l].valeur < -11)) { 
+								/* on a deux bombes +, on les fusionne => on a une bombe x sur la case d'arrivée */
 									tab[m][l].valeur = 0; /* on vide la case en cours de traitement */
 									tab[m+1][l].valeur = -11; /* on obtient une bombe x sur la case d'arrivée */
 								}
@@ -355,15 +364,18 @@ void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* case
 								n = largeur;
 							}
 							else if((tab[h][n+1].valeur < 0) && (tab[h][n].valeur < 0) && (tab[h][n+1].fusion < nb_tour)) { /* si la case située à gauche et la case en cours de traitement sont des bombes, et que la case à gauche ne résulte pas d'une fusion à ce tour, on procède à des tests spécifiques */
-								if((tab[h][n+1].valeur <= -21) && (tab[h][n].valeur <= -21)) { /* on a deux bombes *, on les fusionne => explosion de celle sur la case d'arrivée */
+								if((tab[h][n+1].valeur <= -21) && (tab[h][n].valeur <= -21)) { 
+								/* on a deux bombes *, on les fusionne => explosion de celle sur la case d'arrivée */
 									tab[h][n].valeur = 0; /* on vide la case en cours de traitement */
 									explosion(tab, hauteur, largeur, h, n+1); /* on fait exploser la bombe de la case d'arrivée */
 								}
-								else if((tab[h][n+1].valeur <= -11) && (tab[h][n].valeur <= -11)) { /* on a deux bombes x, on les fusionne => on a une bombe * sur la case d'arrivée */
+								else if((tab[h][n+1].valeur <= -11) && (tab[h][n].valeur <= -11) && (tab[h][n+1].valeur > -21) && (tab[h][n].valeur > -21)) { 
+								/* on a deux bombes x, on les fusionne => on a une bombe * sur la case d'arrivée */
 									tab[h][n].valeur = 0; /* on vide la case en cours de traitement */
 									tab[h][n+1].valeur = -21; /* on obtient une bombe * sur la case d'arrivée */
 								}
-								else if((tab[h][n+1].valeur <= -1) && (tab[h][n].valeur <= -1)) { /* on a deux bombes +, on les fusionne => on a une bombe x sur la case d'arrivée */
+								else if((tab[h][n+1].valeur <= -1) && (tab[h][n].valeur <= -1) && (tab[h][n+1].valeur > -11) && (tab[h][n].valeur > -11)) { 
+								/* on a deux bombes +, on les fusionne => on a une bombe x sur la case d'arrivée */
 									tab[h][n].valeur = 0; /* on vide la case en cours de traitement */
 									tab[h][n+1].valeur = -11; /* on obtient une bombe x sur la case d'arrivée */
 								}
