@@ -5,5 +5,6 @@
 
 void explosion(obj** tab, int hauteur, int largeur, int h, int l);
 void check_bombes(obj** tab, int hauteur, int largeur);
+void affich_choix_bombe(obj** tab, int hauteur, int largeur, int val_max, coord* coordonnees);
 
 #endif

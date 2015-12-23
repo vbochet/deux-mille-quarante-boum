@@ -10,10 +10,4 @@ struct s_obj{ /* structure d'objet du tableau */
 };
 typedef struct s_obj obj;
 
-struct s_coord{ /* coordonnées (hauteur, largeur) */
-    int h; /* hauteur */
-    int l; /* largeur */
-};
-typedef struct s_coord coord;
-
 #endif

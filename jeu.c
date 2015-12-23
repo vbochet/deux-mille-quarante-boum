@@ -65,7 +65,7 @@ obj nouvel_objet(int cases_vides, int valeur_max) /* génère un nouvel objet al
    @assigns coordonnees
    @ensures à la fin, le joueur a effectué un choix de mouvement valide
    @*/
-char choix_action(obj** tab, int hauteur, int largeur, int val_max, int nb_chiffres, coord* coordonnees) /* fonction de demande de choix au joueur */
+char choix_action(obj** tab, int hauteur, int largeur, int val_max, int nb_chiffres, int* coordh, int* coordl) /* fonction de demande de choix au joueur */
 {
 	int faire_boucle, n; /* variables de boucle */
 	char action; /* choix d'action du joueur (i, j, k, l, b, q, h) */
@@ -117,14 +117,15 @@ char choix_action(obj** tab, int hauteur, int largeur, int val_max, int nb_chiff
 			case 'b':
 				printf("Vous avez choisi de faire exploser une bombe. Quelles sont ses coordonnées ? \n");
 				printf("Hauteur : ");
-				scanf("%d", &(coordonnees->h)); /* on récupère la hauteur de la bombe */
+				scanf("%d", coordh); /* on récupère la hauteur de la bombe */
+				*coordh = hauteur - (*coordh); /* pour le joueur, l'origine du tableau est en bas à gauche. Pour le code, l'origine est en haut à gauche. On doit donc "renverser" la valeur de la hauteur pour que cela corresponde. */
 				printf("Largeur : ");
-				scanf("%d", &(coordonnees->l)); /* on récupère la largeur de la bombe */
+				scanf("%d", coordl); /* on récupère la largeur de la bombe */
 				
 				/* on vérifie que c'est une bombe */
-				if(tab[coordonnees->h][coordonnees->l]).valeur < 0) { /* si oui, on peut demander confirmation au joueur */
+				if(tab[*coordh][*coordl]).valeur < 0) { /* si oui, on peut demander confirmation au joueur */
 					system("clear");
-					affich_choix_bombe(tab, hauteur, largeur, val_max, *coordonnees);
+					affich_choix_bombe(tab, hauteur, largeur, val_max, *coordh, *coordl);
 					printf("Voici la bombe à faire exploser. \n");
 					faire_boucle=confirmation();
 				}
@@ -398,7 +399,7 @@ void tour(obj** tab, int hauteur, int largeur, int* val_max, int* cases_vides, i
     obj nouvel_obj;
 	int nb_chiffres;
 	char action;
-	coord coordonnees;
+	int coordh, coordl; /* les coordonnées lorsqu'on voudra faire exploser une bombe */
 	
 	nb_chiffres = max(3, log10(*val_max)+1);
 	*n_tour = *n_tour+1;
@@ -411,11 +412,11 @@ void tour(obj** tab, int hauteur, int largeur, int* val_max, int* cases_vides, i
 	
     remplir_tableau(tab, hauteur, largeur, cases_vides, nouvel_obj); /*on place le nouvel objet dans le tableau à la place indiquée*/
 	
-	action = choix_action(tab, hauteur, largeur, *val_max, nb_chiffres, coordonnees);
+	action = choix_action(tab, hauteur, largeur, *val_max, nb_chiffres, &coordh, &coordl);
 	if('q' == action) {
 		*quitter = 1;
 		return;
 	}
-	execute_action(tab, hauteur, largeur, val_max, cases_vides, *n_tour, action, coordonnees);
+	execute_action(tab, hauteur, largeur, val_max, cases_vides, *n_tour, action, coordh, coordl);
 }
 
