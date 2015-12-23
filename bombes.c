@@ -50,7 +50,7 @@ void explosion(obj** tab, int hauteur, int largeur, int h, int l)
 		
 		if((h-1 > 0) && (l+1 < largeur)) { /* la case en diagonale haut-droite existe-t-elle ? */
 			if(tab[h-1][l+1].valeur < 0) { /* si la case voisine est une bombe, on la fait exploser aussi */
-				explosion(tab, hauteur, largeur, h-1, l-1);
+				explosion(tab, hauteur, largeur, h-1, l+1);
 			}
 			else { /* sinon, on fait simplement disparaitre l'élément du tableau */
 				tab[h-1][l+1].valeur = 0;
@@ -59,7 +59,7 @@ void explosion(obj** tab, int hauteur, int largeur, int h, int l)
 		
 		if((h+1 < hauteur) && (l-1 > 0)) { /* la case en diagonale bas-gauche existe-t-elle ? */
 			if(tab[h+1][l-1].valeur < 0) { /* si la case voisine est une bombe, on la fait exploser aussi */
-				explosion(tab, hauteur, largeur, h-1, l-1);
+				explosion(tab, hauteur, largeur, h+1, l-1);
 			}
 			else { /* sinon, on fait simplement disparaitre l'élément du tableau */
 				tab[h+1][l-1].valeur = 0;
@@ -68,10 +68,47 @@ void explosion(obj** tab, int hauteur, int largeur, int h, int l)
 		
 		if((h+1 < hauteur) && (l+1 < largeur)) { /* la case en diagonale bas-gauche existe-t-elle ? */
 			if(tab[h+1][l+1].valeur < 0) { /* si la case voisine est une bombe, on la fait exploser aussi */
-				explosion(tab, hauteur, largeur, h-1, l-1);
+				explosion(tab, hauteur, largeur, h+1, l+1);
 			}
 			else { /* sinon, on fait simplement disparaitre l'élément du tableau */
 				tab[h+1][l+1].valeur = 0;
+			}
+		}
+	}
+	else if(type == 1) { /* si c'est un +, on regarde les cases latérales autour de la position de la bombe */
+		if(l-1 > 0) { /* la case à gauche existe-t-elle ? */
+			if(tab[h][l-1].valeur < 0) { /* si la case voisine est une bombe, on la fait exploser aussi */
+				explosion(tab, hauteur, largeur, h, l-1);
+			}
+			else { /* sinon, on fait simplement disparaitre l'élément du tableau */
+				tab[h][l-1].valeur = 0;
+			}
+		}
+		
+		if(l+1 < largeur) { /* la case à droite existe-t-elle ? */
+			if(tab[h][l+1].valeur < 0) { /* si la case voisine est une bombe, on la fait exploser aussi */
+				explosion(tab, hauteur, largeur, h, l-1);
+			}
+			else { /* sinon, on fait simplement disparaitre l'élément du tableau */
+				tab[h][l+1].valeur = 0;
+			}
+		}
+		
+		if(h+1 < hauteur) { /* la case en dessous existe-t-elle ? */
+			if(tab[h+1][l].valeur < 0) { /* si la case voisine est une bombe, on la fait exploser aussi */
+				explosion(tab, hauteur, largeur, h-1, l);
+			}
+			else { /* sinon, on fait simplement disparaitre l'élément du tableau */
+				tab[h+1][l].valeur = 0;
+			}
+		}
+		
+		if(h-1 > 0) { /* la case au dessus existe-t-elle ? */
+			if(tab[h-1][l].valeur < 0) { /* si la case voisine est une bombe, on la fait exploser aussi */
+				explosion(tab, hauteur, largeur, h-1, l);
+			}
+			else { /* sinon, on fait simplement disparaitre l'élément du tableau */
+				tab[h-1][l].valeur = 0;
 			}
 		}
 	}
