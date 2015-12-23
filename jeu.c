@@ -18,15 +18,39 @@ obj nouvel_objet(int cases_vides, int valeur_max) /* génère un nouvel objet al
 {
     obj nouv_objet;
     int valeur; /* la valeur du nouvel objet */
+	int alea; /* nombre aléatoire généré */
 
     if(valeur_max < 64) {
 		valeur = 1;
 	}
-    else if(valeur_max < 256) { /* 80% de chances d'avoir un 1, 20% d'avoir un 2 */
-		valeur = (alea_bornes(0,100) > 80) + 1;
+    else if(valeur_max < 256) { /* 70% de chances d'avoir un 1, 20% d'avoir un 2, 10% d'avoir un + */
+		alea = alea_bornes(0,100);
+		
+		if(alea < 70) { /* 70% de chances d'avoir un 1 */
+			valeur = 1;
+		}
+		else if(alea < 90) { /* 90-70=20% de chances d'avoir un 2 */
+			valeur = 2;
+		}
+		else { /* 100-90=10% de chances d'avoir un + */
+			valeur = -1;
+		}
 	}
-    else { /* 65% de chances d'avoir un 1, 35% d'avoir un 2 */
-		valeur = (alea_bornes(0,100) > 65) + 1;
+    else { /* 60% de chances d'avoir un 1, 25% d'avoir un 2, 10% d'avoir un + et 5% d'avoir un x */
+		alea = alea_bornes(0,100);
+		
+		if(alea < 60) { /* 60% de chances d'avoir un 1 */
+			valeur = 1;
+		}
+		else if(alea < 85) { /* 85-60=25% de chances d'avoir un 2 */
+			valeur = 2;
+		}
+		else if(alea < 95) { /* 95-85=10% de chances d'avoir un + */
+			valeur = -1;
+		}
+		else { /* 100-95=5% de chances d'avoir un x */
+			valeur = -11;
+		}
 	}
 
     nouv_objet.position = alea_bornes(0,cases_vides); /* numéro de la case vide où placer ce nouvel objet */
@@ -41,17 +65,22 @@ obj nouvel_objet(int cases_vides, int valeur_max) /* génère un nouvel objet al
    @assigns 
    @ensures à la fin, le joueur a effectué un choix de mouvement valide
    @*/
-char choix_action(obj** tab, int hauteur, int largeur, int val_max, int nb_chiffres) /* fonction de demande de choix au joueur */
+char choix_action(obj** tab, int hauteur, int largeur, int val_max, int nb_chiffres, coord* coordonnees) /* fonction de demande de choix au joueur */
 {
 	int faire_boucle, n; /* variables de boucle */
-	char action; /* choix d'action du joueur (i, j, k, l, q, h) */
+	char action; /* choix d'action du joueur (i, j, k, l, b, q, h) */
 	char buffer[2]; /* 2 car 1 caractère PLUS le \0 des chaînes */
 	
 	faire_boucle = 1;
 	
-	while(faire_boucle==1) /* se terminera lorsque le joueur aura effectué un choix correct et qu'il l'aura validé */
+	while(faire_boucle > 0) /* se terminera lorsque le joueur aura effectué un choix correct et qu'il l'aura validé */
 	{
 		system("clear");
+		
+		if(faire_boucle == 2) { /* on affiche un message d'avertissement car le joueur s'est trompé en indiquant les coordonnées de la bombe lors de son choix*/
+			printf("Vous n'avez pas choisi une bombe ! Veuillez recommencer.\n\n");
+		}
+		
 		print_tableau(tab, hauteur, largeur, val_max); /* on affiche le tableau */
 
 		printf("Que faire ? ");
@@ -85,6 +114,25 @@ char choix_action(obj** tab, int hauteur, int largeur, int val_max, int nb_chiff
 				faire_boucle=confirmation();
 			break;
 			
+			case 'b':
+				printf("Vous avez choisi de faire exploser une bombe. Quelles sont ses coordonnées ? \n");
+				printf("Hauteur : ");
+				scanf("%d", &(coordonnees->h)); /* on récupère la hauteur de la bombe */
+				printf("Largeur : ");
+				scanf("%d", &(coordonnees->l)); /* on récupère la largeur de la bombe */
+				
+				/* on vérifie que c'est une bombe */
+				if(tab[coordonnees->h][coordonnees->l]).valeur < 0) { /* si oui, on peut demander confirmation au joueur */
+					system("clear");
+					affich_choix_bombe(tab, hauteur, largeur, val_max, *coordonnees);
+					printf("Voici la bombe à faire exploser. \n");
+					faire_boucle=confirmation();
+				}
+				else { /* sinon, on lui repose la question de ce qu'il veut faire */
+					faire_boucle = 2;
+				}
+			break;
+			
 			case 'q':
 				printf("Vous avez choisi de quitter la partie. \n");
 				faire_boucle=confirmation();
@@ -97,6 +145,9 @@ char choix_action(obj** tab, int hauteur, int largeur, int val_max, int nb_chiff
 				printf("- j => déplacement vers la gauche\n");
 				printf("- k => déplacement vers le bas\n");
 				printf("- l => déplacement vers la droite\n");
+				printf("- b => faire exploser une bombe\n       rappel : coordonnées de la case en bas à gauche = (0,0)\n");
+				printf("       bombe + => supprime les valeurs latérales\n       bombe x => supprime les valeurs diagonales\n");
+				printf("       bombe * => supprime toutes les valeurs attenantes\n");
 				printf("- q => quitter la partie\n");
 				printf("- h => revenir ici (à l'aide)\n");
 				printf("\nPour revenir au jeu, entrez un caractère : ");
