@@ -398,19 +398,24 @@ void tour(obj** tab, int hauteur, int largeur, int* val_max, int* cases_vides, i
     obj nouvel_obj;
 	int nb_chiffres;
 	char action;
+	coord coordonnees;
 	
 	nb_chiffres = max(3, log10(*val_max)+1);
 	*n_tour = *n_tour+1;
 	
+	/* avant de commencer le tour en ajoutant un nouvel objet, on incrémente le nombre de tours de chaque bombe, on vérifie si des bombes doivent exploser spontanément, et on réalise les explosions le cas échéant */
+	check_bombes(tab, hauteur, largeur);
+	
+	/* on peut ensuite reprendre le déroulement classique d'un tour de jeu */
     nouvel_obj = nouvel_objet(*cases_vides, *val_max); /*on génère le nouvel objet à ajouter à notre tableau de jeu*/
 	
     remplir_tableau(tab, hauteur, largeur, cases_vides, nouvel_obj); /*on place le nouvel objet dans le tableau à la place indiquée*/
 	
-	action = choix_action(tab, hauteur, largeur, *val_max, nb_chiffres);
+	action = choix_action(tab, hauteur, largeur, *val_max, nb_chiffres, coordonnees);
 	if('q' == action) {
 		*quitter = 1;
 		return;
 	}
-	execute_action(tab, hauteur, largeur, val_max, cases_vides, *n_tour, action);
+	execute_action(tab, hauteur, largeur, val_max, cases_vides, *n_tour, action, coordonnees);
 }
 
