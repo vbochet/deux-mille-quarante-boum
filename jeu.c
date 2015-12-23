@@ -164,14 +164,14 @@ char choix_action(obj** tab, int hauteur, int largeur, int val_max, int nb_chiff
 }
 
 
-/* @requires hauteur>1, largeur>1, action in {i,j,k,l}
+/* @requires hauteur>1, largeur>1, action in {i,j,k,l, b}
    @assigns tab, val_max, cases_vides
    @ensures à la fin, on a effectué tous les déplacements du tour
    @*/
-void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* cases_vides, int nb_tour, char action, coord coordonnees) /* effectue l'action choisie */
+void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* cases_vides, int nb_tour, char action, int coordh, int coordl) /* effectue l'action choisie */
 {
-	int h,l; /*variables de boucles correspondant aux lignes et aux colonnes*/
-	int m,n; /*idem*/
+	int h,l; /* variables de boucles correspondant aux lignes et aux colonnes */
+	int m,n; /* idem */
 	
 	switch(action) {
 		case 'i': /*déplacement vers le haut*/
@@ -384,7 +384,7 @@ void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* case
 		break;
 		
 		case 'b': /* explosion d'une bombe (vérifiée auparavant dans la fonction choix_action */
-			explosion(tab, hauteur, largeur, coordonnees.h, coordonnees.l);
+			explosion(tab, hauteur, largeur, coordh, coordl);
 		break;
 	}
 }

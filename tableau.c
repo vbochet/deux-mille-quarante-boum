@@ -89,7 +89,7 @@ void print_tableau(obj** tab, int hauteur, int largeur, int val_max) /* fonction
 				printf("|%*s", nb_chiffres, "x"); 
 			}
 			else if((tab[h][l]).valeur < -1) { /* si la case contient un nombre < -1, on affiche une bombe + (pas de souci avec les bombes x et * car le cas où la valeur de la case est < -11 ou -21 est déjà traité dans des else if) */
-				printf("|%*s", nb_chiffres, "x"); 
+				printf("|%*s", nb_chiffres, "+"); 
 			}
 			else {
 				printf("|%*s", nb_chiffres, ""); /* si la case est vide, on n'affiche pas de contenu */

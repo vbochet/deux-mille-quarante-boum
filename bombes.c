@@ -135,3 +135,82 @@ void check_bombes(obj** tab, int hauteur, int largeur)
 	}
 }
 
+
+/* @requires hauteur>1, largeur>1
+   @assigns
+   @ensures affiche le tableau en mettant en évidence la bombe sélectionnée à l'aide d'accolades {}
+   @*/
+void affich_choix_bombe(obj** tab, int hauteur, int largeur, int val_max, int coordh, int coordl) {
+	
+  int h, l; /* variables de boucle sur la hauteur et la largeur du tableau */
+  int n; /* variable de boucle for */
+  int nb_chiffres; /* nombre de chiffres de la valeur maximale du tableau, pour gérer un affichage correct */
+  
+  /* on veut un affichage avec des colonnes de largeur minimale 3, et plus si la valeur maximale du tableau est supérieure à 999 */
+  nb_chiffres = max(3, log10(val_max)+1); 
+  
+	for(h = 0; h < hauteur; h = h+1) { /* boucle sur les lignes */
+		/* affichage de la barre horizontale en haut de la ligne en cours */
+		printf("-");
+		for(n = 1; n <= largeur * (nb_chiffres+1); n = n+1) {
+			printf("-");
+		}
+		printf("\n");
+
+		/* affichage d'une première ligne "vide" car chaque ligne est affichée sur 3 lignes de texte */
+		for(l=0; l<largeur; l=l+1) {
+			printf("|%*s", nb_chiffres, ""); /* on utilise %*s pour pouvoir adapter la taille de l'affichage*/
+		}
+		printf("|\n");
+
+		/* affichage des lignes comportant du contenu */
+		for(l = 0; l < largeur; l = l+1) {
+			if((tab[h][l]).valeur > 0) { /* si la case contient un nombre positif, on affiche son contenu */
+				printf("|%*d", nb_chiffres, (tab[h][l]).valeur); /* idem ici pour %*d, on peut adapter la taille de l'affichage de l'int */
+			}
+			else if((tab[h][l]).valeur < -21) { /* si la case contient un nombre < -21, on affiche une bombe * */
+				if((h == coordh) && (l == coordl)) {
+					printf("|%*s", nb_chiffres, "{*}");
+				}
+				else {
+					printf("|%*s", nb_chiffres, "*");
+				}					
+			}
+			else if((tab[h][l]).valeur < -11) { /* si la case contient un nombre < -11, on affiche une bombe x (pas de souci avec les bombes * car le cas où la valeur de la case est < -21 est déjà traité dans un else if) */
+				if((h == coordh) && (l == coordl)) {
+					printf("|%*s", nb_chiffres, "{x}");
+				}
+				else {
+					printf("|%*s", nb_chiffres, "x");
+				}	 
+			}
+			else if((tab[h][l]).valeur < -1) { /* si la case contient un nombre < -1, on affiche une bombe + (pas de souci avec les bombes x et * car le cas où la valeur de la case est < -11 ou -21 est déjà traité dans des else if) */
+				if((h == coordh) && (l == coordl)) {
+					printf("|%*s", nb_chiffres, "{+}");
+				}
+				else {
+					printf("|%*s", nb_chiffres, "+");
+				}	
+			}
+			else {
+				printf("|%*s", nb_chiffres, ""); /* si la case est vide, on n'affiche pas de contenu */
+			}
+		}
+		printf("|\n");
+
+		/* affichage de la troisième ligne "vide" */
+		for(l = 0; l < largeur; l = l+1) {
+			printf("|%*s", nb_chiffres, "");
+		}
+		printf("|\n");
+	}
+  
+  /* affichage de la barre horizontale fermant le tableau */
+    printf("-");
+	for(n=1; n<=largeur*(nb_chiffres+1); n=n+1) {
+		printf("-");
+    }
+    printf("\n");
+	printf("\n");
+}
+
