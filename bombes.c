@@ -3,8 +3,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "struct.h"
+#include "utils.h"
 
 /* @requires 0<=h<hauteur, 0<=l<largeur
    @assigns tab
