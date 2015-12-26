@@ -116,10 +116,14 @@ char choix_action(obj** tab, int hauteur, int largeur, int val_max, int nb_chiff
    @assigns tab, val_max, cases_vides
    @ensures à la fin, on a effectué tous les déplacements du tour
    @*/
-void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* cases_vides, int nb_tour, char action) /* effectue l'action choisie */
+int execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* cases_vides, int nb_tour, char action) /* effectue l'action choisie */
 {
 	int h,l; /*variables de boucles correspondant aux lignes et aux colonnes*/
 	int m,n; /*idem*/
+	
+	int actions_exec; /* vaut 0 si aucune action n'a pu être effectuée, 1 sinon */
+	
+	actions_exec = 0; 
 	
 	switch(action) {
 		case 'i': /*déplacement vers le haut*/
@@ -132,6 +136,8 @@ void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* case
 								tab[m-1][l].valeur = tab[m][l].valeur; /* on swap les cases */
 								tab[m][l].valeur = 0;
 								m = m-1; /* on travaille sur la case du dessus pour poursuivre le déplacement */
+									
+								actions_exec = 1; /* on a fait une action, le choix du joueur était donc autorisé */
 							}
 							else if((tab[m-1][l].valeur==tab[m][l].valeur) && (tab[m-1][l].fusion<nb_tour)) { /* si la case située au dessus a la même valeur que la case en cours de traitement, et que la case au dessus ne résulte pas d'une fusion à ce tour, on les "fusionne" */
 								tab[m-1][l].valeur = tab[m-1][l].valeur + tab[m][l].valeur;
@@ -143,6 +149,8 @@ void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* case
 									*val_max = tab[m-1][l].valeur;
 								}
 								m = 0; /* on sort de la boucle dès lors qu'on a fait une somme avec une autre case. en effet, si on ne s'arrête pas, on risque de sommer des cases qui viennent d'être crées pendant le tour */
+									
+								actions_exec = 1; /* on a fait une action, le choix du joueur était donc autorisé */
 							}
 							else { /* si on ne peut pas faire de mouvement, on arrête la boucle */
 								m = 0;
@@ -167,6 +175,8 @@ void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* case
 								tab[h][n-1].valeur = tab[h][n].valeur;
 								tab[h][n].valeur = 0;
 								n = n-1;
+									
+								actions_exec = 1; /* on a fait une action, le choix du joueur était donc autorisé */
 							}
 							else if((tab[h][n-1].valeur == tab[h][n].valeur) && (tab[h][n-1].fusion < nb_tour)) { /* si la case située à gauche a la même valeur que la case en cours de traitement, et que la case à gauche ne résulte pas d'une fusion à ce tour, on les "fusionne" */
 								tab[h][n-1].valeur = tab[h][n-1].valeur + tab[h][n].valeur;
@@ -178,6 +188,8 @@ void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* case
 									*val_max = tab[h][n-1].valeur;
 								}
 								n = 0;
+									
+								actions_exec = 1; /* on a fait une action, le choix du joueur était donc autorisé */
 							}
 							else { /*si on ne peut pas faire de mouvement, on arrête la boucle*/
 								n = 0;
@@ -201,6 +213,8 @@ void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* case
 								tab[m+1][l].valeur = tab[m][l].valeur;
 								tab[m][l].valeur = 0;
 								m = m+1;
+									
+								actions_exec = 1; /* on a fait une action, le choix du joueur était donc autorisé */
 							}
 							else if((tab[m+1][l].valeur == tab[m][l].valeur) && (tab[m+1][l].fusion < nb_tour)) { /* si la case située en dessous a la même valeur que la case en cours de traitement, et que la case en dessous ne résulte pas d'une fusion à ce tour, on les "fusionne" */
 								tab[m+1][l].valeur = tab[m+1][l].valeur + tab[m][l].valeur;
@@ -212,6 +226,8 @@ void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* case
 									*val_max = tab[m+1][l].valeur;
 								}
 								m = hauteur;
+									
+								actions_exec = 1; /* on a fait une action, le choix du joueur était donc autorisé */
 							}
 							else { /* si on ne peut pas faire de mouvement, on arrête la boucle */
 								m = hauteur;
@@ -235,6 +251,8 @@ void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* case
 								tab[h][n+1].valeur = tab[h][n].valeur;
 								tab[h][n].valeur = 0;
 								n = n+1;
+									
+								actions_exec = 1; /* on a fait une action, le choix du joueur était donc autorisé */
 							}
 							else if((tab[h][n+1].valeur == tab[h][n].valeur) && (tab[h][n+1].fusion < nb_tour)) { /* si la case située à droite a la même valeur que la case en cours de traitement, et que la case à droite ne résulte pas d'une fusion à ce tour, on les "fusionne" */
 								tab[h][n+1].valeur = tab[h][n+1].valeur + tab[h][n].valeur;
@@ -246,6 +264,8 @@ void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* case
 									*val_max = tab[h][n+1].valeur;
 								}
 								n = largeur;
+									
+								actions_exec = 1; /* on a fait une action, le choix du joueur était donc autorisé */
 							}
 							else {
 								n = largeur;
@@ -259,6 +279,8 @@ void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* case
 			}
 		break;
 	}
+	
+	return actions_exec;
 }
 
 
@@ -271,6 +293,7 @@ void tour(obj** tab, int hauteur, int largeur, int* val_max, int* cases_vides, i
     obj nouvel_obj;
 	int nb_chiffres;
 	char action;
+	int succes;
 	
 	nb_chiffres = max(3, log10(*val_max)+1);
 	*n_tour = *n_tour+1;
@@ -279,11 +302,17 @@ void tour(obj** tab, int hauteur, int largeur, int* val_max, int* cases_vides, i
 	
     remplir_tableau(tab, hauteur, largeur, cases_vides, nouvel_obj); /*on place le nouvel objet dans le tableau à la place indiquée*/
 	
-	action = choix_action(tab, hauteur, largeur, *val_max, nb_chiffres);
-	if('q' == action) {
-		*quitter = 1;
-		return;
+	do { /* structure do while car on veut faire les instructions au moins une fois */
+		action = choix_action(tab, hauteur, largeur, *val_max, nb_chiffres); /* on demande au joueur ce qu'il veut faire */
+		if('q' == action) { /* s'il veut quitter, on quitte le jeu */
+			*quitter = 1;
+			return;
+		}
+		/* sinon, on effectue l'action qu'il a demandée et on récupère la valeur renvoyée */
+		succes = execute_action(tab, hauteur, largeur, val_max, cases_vides, *n_tour, action);
+		
 	}
-	execute_action(tab, hauteur, largeur, val_max, cases_vides, *n_tour, action);
+	while ((succes == 0) && (*cases_vides > 0)); /* et on recommence tant que les actions n'étaient pas possibles et qu'il reste des actions possibles */
+	
 }
 
