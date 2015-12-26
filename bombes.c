@@ -17,16 +17,16 @@ void explosion(obj** tab, int hauteur, int largeur, int* cases_vides, int h, int
 	obj bombe;
 	int m,n; /* variables de boucle */
 	
-	bombe = tab[h][l];
+	bombe = tab[h][l]; /* on sauvegarde la valeur de la bombe avant de la retirer du tableau et de faire ses effets */
 	
 	tab[h][l].valeur = 0; /* on fait "exploser" la bombe : la case sur laquelle elle était devient vide */
 	*cases_vides = *cases_vides + 1; /* on rajoute une case vide au compteur */
 	
 	/* on traite ensuite les cases alentour, selon le type de bombe */
 	if(bombe.valeur <= -21) { /* si c'est un *, on regarde toutes les cases dans un rayon de 1 case autour de la position de la bombe */
-		for(m = h-1; m <= h+1; m=m+1) {
+		for(m = h-1; m <= h+1; m=m+1) { 
 			if((m >= 0) && (m < hauteur)) { /* si la case qu'on veut traiter existe bien (càd qu'elle est dans le tableau, donc m compris entre 0 et hauteur-1) */
-				for(n = l-1; n <= n+1; n = n+1) {
+				for(n = l-1; n <= l+1; n = n+1) {
 					if((n >= 0) && (n < largeur)) {/* si la case qu'on veut traiter existe bien (càd qu'elle est dans le tableau, donc n compris entre 0 et largeur-1) */
 						if(tab[m][n].valeur < 0) { /* si la case voisine est une bombe, on la fait exploser aussi */
 							explosion(tab, hauteur, largeur, cases_vides, m, n);
