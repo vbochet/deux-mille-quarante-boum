@@ -163,7 +163,9 @@ void check_bombes(obj** tab, int hauteur, int largeur, int* cases_vides)
 	for(h = 0; h < hauteur; h = h+1) {
 		for(l = 0; l < largeur; l = l+1) {
 			if(tab[h][l].valeur < 0) { /* si c'est une bombe, on effectue un traitement spécifique, sinon on passe à la case suivante */
+			
 				tab[h][l].valeur = tab[h][l].valeur - 1; /* la bombe a "vécu" un tour supplémentaire, symbolisé par sa valeur qui perd une unité */
+				
 				if((tab[h][l].valeur == -8) || (tab[h][l].valeur == -18) || (tab[h][l].valeur == -28)) { /* pour ces valeurs, la bombe a été sur le tableau pendant 7 tours et entame son 8e tour, il faut donc la faire exploser */
 					explosion(tab, hauteur, largeur, cases_vides, h, l);
 				}

@@ -194,6 +194,7 @@ void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* case
 								tab[m][l].valeur = 0;
 								m = m-1; /* on travaille sur la case du dessus pour poursuivre le déplacement */
 							}
+							/* /!\ la suivante pose souci si on a deux cases de valeur -11 par exemple (une case x apparue pendant le tour, et une crée par la somme de deux +) on aurait une case -22, soit un * avec un tour de moins à vivre */
 							else if((tab[m-1][l].valeur == tab[m][l].valeur) && (tab[m-1][l].fusion < nb_tour)) { /* si la case située au dessus a la même valeur que la case en cours de traitement, et que la case au dessus ne résulte pas d'une fusion à ce tour, on les "fusionne" */
 								tab[m-1][l].valeur = tab[m-1][l].valeur + tab[m][l].valeur;
 								tab[m-1][l].fusion = nb_tour;
@@ -208,21 +209,24 @@ void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* case
 							else if((tab[m-1][l].valeur < 0) && (tab[m][l].valeur < 0) && (tab[m-1][l].fusion < nb_tour)) { /* si la case située au dessus et la case en cours de traitement sont des bombes, et que la case au dessus ne résulte pas d'une fusion à ce tour, on procède à des tests spécifiques */
 								if((tab[m-1][l].valeur <= -21) && (tab[m][l].valeur <= -21)) { 
 								/* on a deux bombes *, on les fusionne => explosion de celle sur la case d'arrivée */
-									tab[m][l].valeur = 0; /* on vide la case en cours de traitement */
+									tab[m][l].valeur = 0; /* on vide la case en cours de traitement (sinon, explosions en boucle car récursives...) */
+									*cases_vides = *cases_vides + 1; /* on a vidé une case du tableau */
 									explosion(tab, hauteur, largeur, cases_vides, m-1, l); /* on fait exploser la bombe de la case d'arrivée */
 								}
 								else if((tab[m-1][l].valeur <= -11) && (tab[m][l].valeur <= -11) && (tab[m-1][l].valeur > -21) && (tab[m][l].valeur > -21)) { 
 								/* on a deux bombes x, on les fusionne => on a une bombe * sur la case d'arrivée */
 									tab[m][l].valeur = 0; /* on vide la case en cours de traitement */
-									tab[m-1][l].valeur = -21; /* on obtient une bombe * sur la case d'arrivée */
+									*cases_vides = *cases_vides + 1; /* on a vidé une case du tableau */
+									tab[m-1][l].valeur = -20; /* on obtient une bombe * sur la case d'arrivée. On doit mettre sa valeur à -20 car elle sera décrémentée au début du tour suivant;, et vaudra donc -21 (càd une bombe * de premier tour) */
 								}
 								else if((tab[m-1][l].valeur <= -1) && (tab[m][l].valeur <= -1) && (tab[m-1][l].valeur > -11) && (tab[m][l].valeur > -11)) { 
 								/* on a deux bombes +, on les fusionne => on a une bombe x sur la case d'arrivée */
 									tab[m][l].valeur = 0; /* on vide la case en cours de traitement */
-									tab[m-1][l].valeur = -11; /* on obtient une bombe x sur la case d'arrivée */
+									*cases_vides = *cases_vides + 1; /* on a vidé une case du tableau */
+									tab[m-1][l].valeur = -10; /* on obtient une bombe x sur la case d'arrivée */
 								}
 								
-								*cases_vides = *cases_vides + 1; /* on a vidé une case du tableau */
+								/* on ne peut pas rajouter de case vide ici, car on pourrait se trouver dans le cas de deux bombes de type différentes (+ et x par ex.) qui ne fusionnent pas mais passent quand même dans cette partie du programme */
 								
 								m = 0; /* on sort de la boucle dès lors qu'on a fait une somme avec une autre case. en effet, si on ne s'arrête pas, on risque de sommer des cases qui viennent d'être crées pendant le tour */
 							}
@@ -265,20 +269,21 @@ void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* case
 								if((tab[h][n-1].valeur <= -21) && (tab[h][n].valeur <= -21)) { 
 								/* on a deux bombes *, on les fusionne => explosion de celle sur la case d'arrivée */
 									tab[h][n].valeur = 0; /* on vide la case en cours de traitement */
+									*cases_vides = *cases_vides + 1; /* on a vidé une case du tableau */
 									explosion(tab, hauteur, largeur, cases_vides, h, n-1); /* on fait exploser la bombe de la case d'arrivée */
 								}
 								else if((tab[h][n-1].valeur <= -11) && (tab[h][n].valeur <= -11) && (tab[h][n-1].valeur > -21) && (tab[h][n].valeur > -21)) { 
 								/* on a deux bombes x, on les fusionne => on a une bombe * sur la case d'arrivée */
 									tab[h][n].valeur = 0; /* on vide la case en cours de traitement */
-									tab[h][n-1].valeur = -21; /* on obtient une bombe * sur la case d'arrivée */
+									*cases_vides = *cases_vides + 1; /* on a vidé une case du tableau */
+									tab[h][n-1].valeur = -20; /* on obtient une bombe * sur la case d'arrivée */
 								}
 								else if((tab[h][n-1].valeur <= -1) && (tab[h][n].valeur <= -1) && (tab[h][n-1].valeur > -11) && (tab[h][n].valeur > -11)) { 
 								/* on a deux bombes +, on les fusionne => on a une bombe x sur la case d'arrivée */
 									tab[h][n].valeur = 0; /* on vide la case en cours de traitement */
-									tab[h][n-1].valeur = -11; /* on obtient une bombe x sur la case d'arrivée */
+									*cases_vides = *cases_vides + 1; /* on a vidé une case du tableau */
+									tab[h][n-1].valeur = -10; /* on obtient une bombe x sur la case d'arrivée */
 								}
-								
-								*cases_vides = *cases_vides + 1; /* on a vidé une case du tableau */
 								
 								n = 0; /* on sort de la boucle dès lors qu'on a fait une somme avec une autre case. en effet, si on ne s'arrête pas, on risque de sommer des cases qui viennent d'être crées pendant le tour */
 							}
@@ -320,20 +325,21 @@ void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* case
 								if((tab[m+1][l].valeur <= -21) && (tab[m][l].valeur <= -21)) { 
 								/* on a deux bombes *, on les fusionne => explosion de celle sur la case d'arrivée */
 									tab[m][l].valeur = 0; /* on vide la case en cours de traitement */
+									*cases_vides = *cases_vides + 1; /* on a vidé une case du tableau */
 									explosion(tab, hauteur, largeur, cases_vides, m+1, l); /* on fait exploser la bombe de la case d'arrivée */
 								}
 								else if((tab[m+1][l].valeur <= -11) && (tab[m][l].valeur <= -11) && (tab[m+1][l].valeur > -21) && (tab[m][l].valeur > -21)) { 
 								/* on a deux bombes x, on les fusionne => on a une bombe * sur la case d'arrivée */
 									tab[m][l].valeur = 0; /* on vide la case en cours de traitement */
-									tab[m+1][l].valeur = -21; /* on obtient une bombe * sur la case d'arrivée */
+									*cases_vides = *cases_vides + 1; /* on a vidé une case du tableau */
+									tab[m+1][l].valeur = -20; /* on obtient une bombe * sur la case d'arrivée */
 								}
-								else if((tab[m+1][l].valeur <= -1) && (tab[m][l].valeur <= -1) && (tab[m+1][l].valeur > -11) && (tab[m][l].valeur < -11)) { 
+								else if((tab[m+1][l].valeur <= -1) && (tab[m][l].valeur <= -1) && (tab[m+1][l].valeur > -11) && (tab[m][l].valeur > -11)) { 
 								/* on a deux bombes +, on les fusionne => on a une bombe x sur la case d'arrivée */
 									tab[m][l].valeur = 0; /* on vide la case en cours de traitement */
-									tab[m+1][l].valeur = -11; /* on obtient une bombe x sur la case d'arrivée */
+									*cases_vides = *cases_vides + 1; /* on a vidé une case du tableau */
+									tab[m+1][l].valeur = -10; /* on obtient une bombe x sur la case d'arrivée */
 								}
-								
-								*cases_vides = *cases_vides + 1; /* on a vidé une case du tableau */
 								
 								m = hauteur; /* on sort de la boucle dès lors qu'on a fait une somme avec une autre case. en effet, si on ne s'arrête pas, on risque de sommer des cases qui viennent d'être crées pendant le tour */
 							}
@@ -375,20 +381,21 @@ void execute_action(obj** tab, int hauteur, int largeur, int* val_max, int* case
 								if((tab[h][n+1].valeur <= -21) && (tab[h][n].valeur <= -21)) { 
 								/* on a deux bombes *, on les fusionne => explosion de celle sur la case d'arrivée */
 									tab[h][n].valeur = 0; /* on vide la case en cours de traitement */
+									*cases_vides = *cases_vides + 1; /* on a vidé une case du tableau */
 									explosion(tab, hauteur, largeur, cases_vides, h, n+1); /* on fait exploser la bombe de la case d'arrivée */
 								}
 								else if((tab[h][n+1].valeur <= -11) && (tab[h][n].valeur <= -11) && (tab[h][n+1].valeur > -21) && (tab[h][n].valeur > -21)) { 
 								/* on a deux bombes x, on les fusionne => on a une bombe * sur la case d'arrivée */
 									tab[h][n].valeur = 0; /* on vide la case en cours de traitement */
-									tab[h][n+1].valeur = -21; /* on obtient une bombe * sur la case d'arrivée */
+									*cases_vides = *cases_vides + 1; /* on a vidé une case du tableau */
+									tab[h][n+1].valeur = -20; /* on obtient une bombe * sur la case d'arrivée */
 								}
 								else if((tab[h][n+1].valeur <= -1) && (tab[h][n].valeur <= -1) && (tab[h][n+1].valeur > -11) && (tab[h][n].valeur > -11)) { 
 								/* on a deux bombes +, on les fusionne => on a une bombe x sur la case d'arrivée */
 									tab[h][n].valeur = 0; /* on vide la case en cours de traitement */
-									tab[h][n+1].valeur = -11; /* on obtient une bombe x sur la case d'arrivée */
+									*cases_vides = *cases_vides + 1; /* on a vidé une case du tableau */
+									tab[h][n+1].valeur = -10; /* on obtient une bombe x sur la case d'arrivée */
 								}
-								
-								*cases_vides = *cases_vides + 1; /* on a vidé une case du tableau */
 								
 								n = largeur; /* on sort de la boucle dès lors qu'on a fait une somme avec une autre case. en effet, si on ne s'arrête pas, on risque de sommer des cases qui viennent d'être crées pendant le tour */
 							}
